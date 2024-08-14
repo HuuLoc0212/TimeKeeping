@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.TimeKeeping" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.TimeKeeping" parent="Theme.MaterialComponents.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/my_primary</item>
         <item name="colorPrimaryVariant">@color/my_primary</item>
@@ -14,5 +14,10 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/my_primary</item>
         <!-- Customize your theme here. -->
+    </style>
+    <style name="SlideActivityAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_in_left</item>
+
     </style>
 </resources>
