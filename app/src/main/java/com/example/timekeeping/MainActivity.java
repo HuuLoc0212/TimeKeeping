@@ -65,14 +65,34 @@ public class MainActivity extends AppCompatActivity {
                     case 3:
                         bottomNav.setSelectedItemId(R.id.bottom_setting);
                         break;
-
+                    default:
+                        bottomNav.setSelectedItemId(R.id.bottom_home);
+                        break;
                 }
+
                 super.onPageSelected(position);
             }
         });
         bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//                Fragment selectedFragment = null;
+//                switch (item.getItemId()){
+//                    case R.id.bottom_home:
+//                        selectedFragment = new FragmentHome();
+//                        break;
+//                    case R.id.bottom_history:
+//                        selectedFragment = new FragmentHistory();
+//                        break;
+//                    case R.id.bottom_profile:
+//                        selectedFragment = new FragmentProfile();
+//                        break;
+//                    case R.id.bottom_setting:
+//                        selectedFragment = new FragmentSetting();
+//                        break;
+//                    default:  selectedFragment = new FragmentHome();
+//                        break;
+//                }
                 int itemId = item.getItemId();
                 if (itemId == R.id.bottom_home) {
                     pagerMain.setCurrentItem(0);
@@ -82,6 +102,10 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 } else if (itemId == R.id.bottom_profile) {
                     pagerMain.setCurrentItem(2);
+                    return true;
+                }
+                else if (itemId == R.id.bottom_setting) {
+                    pagerMain.setCurrentItem(3);
                     return true;
                 }
                 return false;

@@ -12,4 +12,9 @@
 
     <color name="my_primary">#5E35B1</color>
     <color name="my_secondary">#673AB7</color>
+
+    <color name="nightmode">#6124B1</color>
+    <color name="notification">#13B2C3</color>
+    <color name="aut_info">#E6A326</color>
+    <color name="security">#D95F69</color>
 </resources>
