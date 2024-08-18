@@ -7,8 +7,17 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.example.timekeeping.R;
+import com.example.timekeeping.adapter.ListRecentAdapter;
+import com.example.timekeeping.model.CICO;
+import com.google.type.DateTime;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,12 +64,23 @@ public class FragmentHome extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        //fake data
+        //LocalDateTime dateTime= LocalDateTime.now();
+        //lstCheckin.add(new CICO("abc",dateTime,dateTime,"night","early"));
+        //lstCheckin.add(new CICO("cdf",dateTime,dateTime,"night","normal"));
+        //lstCheckin.add(new CICO("sfsdf",dateTime,dateTime,"night","late"));
+        //lstCheckin.add(new CICO("adf",dateTime,dateTime,"night","normal"));
+        //lstCheckin.add(new CICO("sfs",dateTime,dateTime,"night","early"));
+
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 }

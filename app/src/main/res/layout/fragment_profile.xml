@@ -7,41 +7,23 @@
     android:background="@color/white"
     tools:context=".Fragment.FragmentProfile">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/left_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/left_icon"
-            android:padding="15dp"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            />
-
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="10"
+            android:gravity="center_vertical"
+            android:paddingStart="30dp"
             android:text="Profile"
-            android:layout_centerInParent="true"
             android:textColor="@color/black"
-            android:layout_alignParentStart="true"
-            android:layout_marginLeft="40dp"
-            android:padding="10dp"
             android:textStyle="bold"
-            android:textSize="32sp"
-            />
-    </RelativeLayout>
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            android:textSize="32sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginVertical="20dp">
             <ImageView
                 android:id="@+id/img_user"
                 android:layout_width="80dp"
@@ -65,20 +47,20 @@
                 android:background="@drawable/round_back_white10_20"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="20dp"
                 android:orientation="vertical"
                 android:padding="15dp"
                 >
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
+                        android:layout_weight="2"
                         android:layout_centerVertical="true"
                         android:textSize="18sp"
                         android:text="Postion:"
@@ -89,24 +71,24 @@
                         />
                     <TextView
                         android:id="@+id/tv_position"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="80dp"
+                        android:layout_weight="1"
                         android:layout_centerVertical="true"
                         android:textSize="18sp"
                         android:text="Developer"
-                        android:padding="12dp"
                         android:textColor="@color/black"
                         />
-                </RelativeLayout>
-                <RelativeLayout
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
+                        android:layout_weight="2"
                         android:layout_centerVertical="true"
                         android:textSize="18sp"
                         android:text="Birthday:"
@@ -117,24 +99,24 @@
                         />
                     <TextView
                         android:id="@+id/tv_birthday"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="80dp"
+                        android:layout_weight="1"
                         android:layout_centerVertical="true"
                         android:textSize="18sp"
                         android:text="2/12/2000"
-                        android:padding="12dp"
                         android:textColor="@color/black"
                         />
-                </RelativeLayout>
-                <RelativeLayout
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
+                        android:layout_weight="2"
                         android:layout_centerVertical="true"
                         android:textSize="18sp"
                         android:text="ID User:"
@@ -145,24 +127,24 @@
                         />
                     <TextView
                         android:id="@+id/tv_userID"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="80dp"
+                        android:layout_weight="1"
                         android:layout_centerVertical="true"
                         android:textSize="18sp"
                         android:text="username"
-                        android:padding="12dp"
                         android:textColor="@color/black"
                         />
-                </RelativeLayout>
-                <RelativeLayout
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
+                        android:layout_weight="2"
                         android:layout_centerVertical="true"
                         android:textSize="18sp"
                         android:text="Phone:"
@@ -173,24 +155,24 @@
                         />
                     <TextView
                         android:id="@+id/tv_phone"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="80dp"
+                        android:layout_weight="1"
                         android:layout_centerVertical="true"
                         android:textSize="18sp"
                         android:text="0123456789"
-                        android:padding="12dp"
                         android:textColor="@color/black"
                         />
-                </RelativeLayout>
-                <RelativeLayout
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
+                        android:layout_weight="2"
                         android:layout_centerVertical="true"
                         android:textSize="18sp"
                         android:text="Email:"
@@ -200,24 +182,24 @@
 
                         />
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="80dp"
+                        android:layout_weight="1"
                         android:layout_centerVertical="true"
                         android:textSize="18sp"
                         android:text="username@gmail.com"
-                        android:padding="12dp"
                         android:textColor="@color/black"
                         />
-                </RelativeLayout>
-                <RelativeLayout
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
+                        android:layout_weight="2"
                         android:layout_centerVertical="true"
                         android:textSize="18sp"
                         android:text="Location:"
@@ -227,19 +209,17 @@
 
                         />
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="80dp"
+                        android:layout_weight="1"
                         android:layout_centerVertical="true"
                         android:textSize="18sp"
                         android:text="Tan Phu, Ho Chi Minh"
-                        android:padding="12dp"
                         android:textColor="@color/black"
                         />
-                </RelativeLayout>
+                </LinearLayout>
 
             </LinearLayout>
 
         </LinearLayout>
-    </ScrollView>
 </LinearLayout>

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -22,16 +23,17 @@ import com.example.timekeeping.Fragment.FragmentHome;
 import com.example.timekeeping.Fragment.FragmentProfile;
 import com.example.timekeeping.Fragment.FragmentSetting;
 import com.example.timekeeping.adapter.AdapterViewPager;
+import com.example.timekeeping.model.CICO;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     ViewPager2 pagerMain;
     BottomNavigationView bottomNav;
-
     ArrayList<Fragment> fragmentArrayList = new ArrayList<>();
     @SuppressLint("NonConstantResourceId")
     @Override

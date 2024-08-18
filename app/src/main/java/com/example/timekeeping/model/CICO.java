@@ -2,15 +2,18 @@ package com.example.timekeeping.model;
 
 import com.google.type.DateTime;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 public class CICO {
-    private String id;
+    private int id;
     private String user;
-    private DateTime ciTime;
-    private DateTime coTime;
+    private LocalDateTime ciTime;
+    private LocalDateTime coTime;
     private String shift;
     private String state;
 
-    public CICO(String id, String user, DateTime ciTime, DateTime coTime, String shift, String state) {
+    public CICO(int id, String user, LocalDateTime ciTime, LocalDateTime coTime, String shift, String state) {
         this.id = id;
         this.user = user;
         this.ciTime = ciTime;
@@ -19,11 +22,19 @@ public class CICO {
         this.state = state;
     }
 
-    public String getId() {
+    public CICO(String user, LocalDateTime ciTime, LocalDateTime coTime, String shift, String state) {
+        this.user = user;
+        this.ciTime = ciTime;
+        this.coTime = coTime;
+        this.shift = shift;
+        this.state = state;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -35,19 +46,19 @@ public class CICO {
         this.user = user;
     }
 
-    public DateTime getCiTime() {
+    public LocalDateTime getCiTime() {
         return ciTime;
     }
 
-    public void setCiTime(DateTime ciTime) {
+    public void setCiTime(LocalDateTime ciTime) {
         this.ciTime = ciTime;
     }
 
-    public DateTime getCoTime() {
+    public LocalDateTime getCoTime() {
         return coTime;
     }
 
-    public void setCoTime(DateTime coTime) {
+    public void setCoTime(LocalDateTime coTime) {
         this.coTime = coTime;
     }
 

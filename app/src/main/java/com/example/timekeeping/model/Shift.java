@@ -5,13 +5,23 @@ import com.google.type.DateTime;
 
 public class Shift {
     private String id;
+    private Date date;
     private DateTime start;
     private DateTime end;
 
-    public Shift(String id, DateTime start, DateTime end) {
+    public Shift(String id,Date date, DateTime start, DateTime end) {
         this.id = id;
+        this.date=date;
         this.start = start;
         this.end = end;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public String getId() {
