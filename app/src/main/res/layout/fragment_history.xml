@@ -9,10 +9,10 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="10"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:paddingStart="30dp"
+        android:paddingVertical="15dp"
         android:text="History"
         android:textColor="@color/black"
         android:textStyle="bold"
@@ -22,40 +22,68 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical"
+        android:paddingHorizontal="20dp"
         android:paddingBottom="70dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingHorizontal="20dp">
+            android:layout_marginBottom="20dp"
+            >
             <TextView
+                android:layout_marginHorizontal="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="From:"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 android:textColor="@color/black"
-                android:layout_marginEnd="10dp"/>
+                android:text="From:"/>
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textColorHint="@color/my_primary"
+                    android:hint="DD/MM/YYYY"
+                    android:padding="5dp"
+                    android:background="@drawable/border_edit_text"
+                    android:gravity="center_horizontal"
+                    android:drawableEnd="@drawable/baseline_calendar_month_24"
                     android:layout_weight="1"
                     android:layout_margin="5dp"
                     android:inputType="date"/>
             <TextView
+                android:layout_marginHorizontal="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 android:layout_gravity="center_vertical"
-                android:text="To:"
                 android:textColor="@color/black"
-                android:layout_marginHorizontal="10dp"/>
+                android:text="To:"/>
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:textColor="@color/black"
+                android:background="@drawable/border_edit_text"
+                android:hint="DD/MM/YYYY"
+                android:textSize="15sp"
+                android:padding="5dp"
+                android:gravity="center_horizontal"
+                android:textColorHint="@color/my_primary"
+                android:drawableEnd="@drawable/baseline_calendar_month_24"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
                 android:inputType="date"/>
         </LinearLayout>
+            <ListView
+                android:id="@+id/lstHis"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </ListView>
     </LinearLayout>
-
 
 </LinearLayout>
