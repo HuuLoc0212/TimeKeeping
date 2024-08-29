@@ -3,48 +3,76 @@ package com.example.timekeeping.model;
 import com.google.type.Date;
 import com.google.type.DateTime;
 
-public class Shift {
-    private String id;
-    private Date date;
-    private DateTime start;
-    private DateTime end;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
-    public Shift(String id,Date date, DateTime start, DateTime end) {
+public class Shift {
+    private int id;
+    private LocalDateTime date;
+    private LocalDateTime start;
+    private LocalDateTime end;
+    private int restTime;
+
+    public Shift(int id,LocalDateTime date, LocalDateTime start, LocalDateTime end,int restTime) {
         this.id = id;
         this.date=date;
         this.start = start;
         this.end = end;
+        this.restTime=restTime;
+    }
+    public Shift(int id,LocalDateTime date, LocalDateTime start, LocalDateTime end) {
+        this.id = id;
+        this.date=date;
+        this.start = start;
+        this.end = end;
+        this.restTime=3600;
+    }
+    public Shift(LocalDateTime date, LocalDateTime start, LocalDateTime end) {
+        this.date=date;
+        this.start = start;
+        this.end = end;
+        this.restTime=3600;
+    }
+    public Shift() {}
+
+
+    public int getRestTime() {
+        return restTime;
     }
 
-    public Date getDate() {
+    public void setRestTime(int restTime) {
+        this.restTime = restTime;
+    }
+
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public DateTime getStart() {
+    public LocalDateTime getStart() {
         return start;
     }
 
-    public void setStart(DateTime start) {
+    public void setStart(LocalDateTime start) {
         this.start = start;
     }
 
-    public DateTime getEnd() {
+    public LocalDateTime getEnd() {
         return end;
     }
 
-    public void setEnd(DateTime end) {
+    public void setEnd(LocalDateTime end) {
         this.end = end;
     }
 }

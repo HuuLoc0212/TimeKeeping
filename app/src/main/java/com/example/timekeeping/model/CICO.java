@@ -7,27 +7,24 @@ import java.time.LocalTime;
 
 public class CICO {
     private int id;
-    private String user;
+    private int user;
     private LocalDateTime ciTime;
     private LocalDateTime coTime;
-    private String shift;
-    private String state;
+    private int shift;
 
-    public CICO(int id, String user, LocalDateTime ciTime, LocalDateTime coTime, String shift, String state) {
+    public CICO(int id, int user, LocalDateTime ciTime, LocalDateTime coTime, int shift, int state) {
         this.id = id;
         this.user = user;
         this.ciTime = ciTime;
         this.coTime = coTime;
         this.shift = shift;
-        this.state = state;
     }
 
-    public CICO(String user, LocalDateTime ciTime, LocalDateTime coTime, String shift, String state) {
+    public CICO(int user, LocalDateTime ciTime, LocalDateTime coTime, int shift, int state) {
         this.user = user;
         this.ciTime = ciTime;
         this.coTime = coTime;
         this.shift = shift;
-        this.state = state;
     }
 
     public int getId() {
@@ -38,11 +35,11 @@ public class CICO {
         this.id = id;
     }
 
-    public String getUser() {
+    public int getUser() {
         return user;
     }
 
-    public void setUser(String user) {
+    public void setUser(int user) {
         this.user = user;
     }
 
@@ -62,19 +59,12 @@ public class CICO {
         this.coTime = coTime;
     }
 
-    public String getShift() {
+    public int getShift() {
         return shift;
     }
 
-    public void setShift(String shift) {
+    public void setShift(int shift) {
         this.shift = shift;
     }
 
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
 }

@@ -83,7 +83,7 @@
             android:id="@+id/txtTyping"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Work hard today, succeed tomorrow "
+            android:text="@string/work_hard_today_succeed_tomorrow"
             android:textSize="18sp"
             android:textColor="@color/white"
             android:layout_marginStart="32dp"
@@ -285,8 +285,7 @@
         <TextView
             android:id="@+id/txtRecent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
+            android:layout_height="wrap_content"
             android:layout_marginVertical="5dp"
             android:gravity="center_vertical"
             android:text="Recent History"
@@ -294,9 +293,8 @@
             android:textStyle="bold"
             android:textColor="@color/black"/>
         <ListView
-            android:id="@+id/lstRecent"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+                android:id="@+id/lstRecent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
     </LinearLayout>
 </LinearLayout>

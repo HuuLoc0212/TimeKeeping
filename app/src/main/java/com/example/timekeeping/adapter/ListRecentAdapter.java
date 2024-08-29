@@ -44,7 +44,6 @@ public class ListRecentAdapter extends BaseAdapter {
             recentItemView = View.inflate(viewGroup.getContext(), R.layout.recent_item, null);
         } else recentItemView = view;
 
-        //Bind sữ liệu phần tử vào View
         CICO checkin = (CICO) getItem(i);
 
         DateTimeFormatter timeFormatter= DateTimeFormatter.ofPattern("HH:mm");
@@ -52,11 +51,8 @@ public class ListRecentAdapter extends BaseAdapter {
         String date=checkin.getCiTime().format(dateFormatter);
         String ciTime=checkin.getCiTime().format(timeFormatter);
         String coTime=checkin.getCoTime().format(timeFormatter);
-
-        ((TextView) recentItemView.findViewById(R.id.itemDate)).setText(date);
-        ((TextView) recentItemView.findViewById(R.id.itemTime)).setText(ciTime+"-"+coTime);
-
-
-        return view;
+        ((TextView) recentItemView.findViewById(R.id.itemDate)).setText(String.valueOf(date));
+        ((TextView) recentItemView.findViewById(R.id.itemTime)).setText(ciTime+" - "+coTime);
+        return recentItemView;
     }
 }

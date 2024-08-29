@@ -57,9 +57,13 @@
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:drawableEnd="@drawable/done_icon"/>
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="24dp"/>
+            <TextView
+                android:id="@+id/txt_account_warning"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:inputType="number"
+                android:textSize="13sp"
+                android:textColor="@color/security"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -74,6 +78,12 @@
                 android:inputType="textPassword"
                 android:drawableEnd="@drawable/hide_icon"
                 android:longClickable="false"/>
+            <TextView
+                android:id="@+id/txt_pass_warning"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:textSize="13sp"
+                android:textColor="@color/security"/>
 
 
             <RelativeLayout

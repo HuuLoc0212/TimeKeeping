@@ -1,5 +1,6 @@
 package com.example.timekeeping.model;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -8,12 +9,12 @@ public class Staff {
    private String name;
    private String usernanme;
    private String pass;
-   private Date bOD;
-   private String role;
+   private LocalDate bOD;
+   private int role;
    private Double basicSalary;
    private List<CICO> cicoHis;
 
-    public Staff(int id, String name, String usernanme, String pass, Date bOD, String role, Double basicSalary, List<CICO> cicoHis) {
+    public Staff(int id, String name, LocalDate bOD, int role, String usernanme, String pass, Double basicSalary) {
         this.id = id;
         this.name = name;
         this.usernanme = usernanme;
@@ -21,10 +22,10 @@ public class Staff {
         this.bOD = bOD;
         this.role = role;
         this.basicSalary = basicSalary;
-        this.cicoHis = cicoHis;
     }
 
-    public Staff(String name, String usernanme, String pass, Date bOD, String role, Double basicSalary) {
+    public Staff( String name, LocalDate bOD, int role, String usernanme, String pass, Double basicSalary) {
+        this.id = id;
         this.name = name;
         this.usernanme = usernanme;
         this.pass = pass;
@@ -32,6 +33,7 @@ public class Staff {
         this.role = role;
         this.basicSalary = basicSalary;
     }
+
     public int getId() {
         return id;
     }
@@ -64,19 +66,19 @@ public class Staff {
         this.name = name;
     }
 
-    public Date getbOD() {
+    public LocalDate getbOD() {
         return bOD;
     }
 
-    public void setbOD(Date bOD) {
+    public void setbOD(LocalDate bOD) {
         this.bOD = bOD;
     }
 
-    public String getRole() {
+    public int getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(int role) {
         this.role = role;
     }
 

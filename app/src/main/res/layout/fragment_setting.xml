@@ -8,10 +8,10 @@
     tools:context=".Fragment.FragmentProfile">
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="10"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:paddingStart="30dp"
+        android:paddingVertical="15dp"
         android:text="Setting"
         android:textColor="@color/black"
         android:textStyle="bold"
@@ -19,8 +19,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:paddingBottom="70dp">
+        android:paddingBottom="84dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -394,6 +393,7 @@
 
             <!-- Log out -->
             <LinearLayout
+                android:id="@+id/btn_logout"
                 android:orientation="horizontal"
                 android:layout_marginVertical="10dp"
                 android:layout_width="match_parent"
@@ -421,10 +421,15 @@
                     android:textStyle="bold"
                     android:layout_toEndOf="@id/logoutIcon"
                     />
-                <Space
+                <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3" />
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="3"
+                    android:src="@drawable/ic_logout_24"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    />
             </LinearLayout>
 
         </LinearLayout>
