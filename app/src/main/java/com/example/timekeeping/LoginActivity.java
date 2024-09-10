@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -53,19 +54,21 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 //check account is correct
                 else {
-                    if(db.getStaffByAccount(email.getText().toString())==null){
+                    staff=db.getStaffByAccount(email.getText().toString());
+                    if(staff==null){
 
                         txt_account_warning.setText("Email incorrect!!");
 
-                    }else {staff=db.getStaffByAccount(email.getText().toString());
-                        if(staff.getPass()!=password.getText().toString()){
+                    }else {
+                        if(!staff.getPass().equals(password.getText().toString())){
                         txt_pass_warning.setText("Password incorrect!!");
                     }else {
                         db.addLogin(new Account(email.getText().toString(),password.getText().toString()));
                         Intent intent=new Intent(context,MainActivity.class);
                         startActivity(intent);
                     }
-                }}
+                }
+                }
 
             }
         });

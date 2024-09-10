@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.timekeeping.DB.DBHelper;
+import com.example.timekeeping.model.Account;
 import com.example.timekeeping.model.Staff;
 
 import java.time.LocalDate;
@@ -29,17 +30,22 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         this.context=this;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                db=new DBHelper(context);
+                db.addFirstHR(new Staff(1,"ABC", LocalDate.of(2000,1,1),0,"HR@123","1",3000000.0));
+                if(db.getAllAccounts().size()==0){
+                    Intent intent=new Intent(context,LoginActivity.class);
+                    startActivity(intent);
+                }
+                else {
+                    Intent intent=new Intent(context,MainActivity.class);
+                    startActivity(intent);
+                }
+            }
+        },500);
 
-        db=new DBHelper(this);
-        db.addFirstHR(new Staff(1,"ABC", LocalDate.of(2000,1,1),0,"HR@123","1",3000000.0));
-        List<Staff> staffList= db.getAllStaffs();
-        if(staffList.size()==0){
-            Intent intent=new Intent(context,LoginActivity.class);
-            startActivity(intent);
-        }
-        else {
-            Intent intent=new Intent(context,MainActivity.class);
-            startActivity(intent);
-        }
+
     }
 }
