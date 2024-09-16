@@ -25,11 +25,12 @@
         android:orientation="vertical"
         android:paddingHorizontal="20dp"
         android:paddingBottom="20dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="5dp"
             >
             <TextView
                 android:layout_marginHorizontal="5dp"
@@ -83,15 +84,41 @@
                 android:inputType="date"/>
 
         </LinearLayout>
-        <Button
-            android:id="@+id/btnLogin"
+        <TextView
+            android:id="@+id/tvMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Search"
-            android:layout_gravity="center"
-            app:cornerRadius="32dp"
-            android:layout_marginBottom="20dp"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:textColor="@color/red"
+
             />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:text="a-zA"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:gravity="start"
+                android:paddingStart="10dp"/>
+
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Filter"
+                android:layout_gravity="center_vertical"
+                app:cornerRadius="32dp"
+                />
+        </LinearLayout>
             <ListView
                 android:id="@+id/lstHis"
                 android:layout_width="match_parent"

@@ -7,24 +7,28 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.timekeeping.R;
 import com.example.timekeeping.adapter.ListRecentAdapter;
 import com.example.timekeeping.model.CICO;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class FragmentHistory extends Fragment {
@@ -32,13 +36,14 @@ public class FragmentHistory extends Fragment {
     private static final String TAG = "Datetimepicker";
 
     private EditText edtFrom, edtTo;
-    private DatePickerDialog.OnDateSetListener mDateSetListernerFrom;
-    private DatePickerDialog.OnDateSetListener mDateSetListernerTo;
-
-
+    private Button btnSearch;
+    private TextView tvMessage; // TextView để hiển thị thông báo lỗi
+    private DatePickerDialog.OnDateSetListener mDateSetListenerFrom;
+    private DatePickerDialog.OnDateSetListener mDateSetListenerTo;
 
     ListRecentAdapter listRecentAdapter;
     ListView lstHis;
+    private String fromDateString, toDateString;
 
     public FragmentHistory() {
     }
@@ -57,98 +62,188 @@ public class FragmentHistory extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view= inflater.inflate(R.layout.fragment_history, container, false);
-        lstHis= view.findViewById(R.id.lstHis);
+        View view = inflater.inflate(R.layout.fragment_history, container, false);
+
+        // Khởi tạo các thành phần giao diện
+        lstHis = view.findViewById(R.id.lstHis);
         edtFrom = view.findViewById(R.id.edtFrom);
         edtTo = view.findViewById(R.id.edtTo);
+        btnSearch = view.findViewById(R.id.btnLogin);
+        tvMessage = view.findViewById(R.id.tvMessage); // TextView để hiển thị thông báo lỗi
 
-        CICO[]checkins={
-                new CICO(1,2, LocalDateTime.now(),LocalDateTime.now(),1,2),
-                new CICO(2,2,LocalDateTime.now(),LocalDateTime.now(),5,6),
-                new CICO(3,3,LocalDateTime.now(),LocalDateTime.now(),4,2),
+        // Fake Data
+        CICO[] checkinsArray = {
+                new CICO(1, 2, LocalDateTime.now(), LocalDateTime.now(), 1, 2),
+                new CICO(2, 2, LocalDateTime.now(), LocalDateTime.now(), 5, 6),
+                new CICO(3, 3, LocalDateTime.now(), LocalDateTime.now(), 4, 2),
+                new CICO(4, 3, LocalDateTime.now(), LocalDateTime.now(), 4, 2),
+                new CICO(5, 3, LocalDateTime.now(), LocalDateTime.now(), 4, 2),
+                new CICO(6, 3, LocalDateTime.now(), LocalDateTime.now(), 4, 2),
+                new CICO(7, 3, LocalDateTime.now(), LocalDateTime.now(), 4, 2),
+                new CICO(8, 3, LocalDateTime.now(), LocalDateTime.now(), 4, 2),
+                new CICO(9, 3, LocalDateTime.now(), LocalDateTime.now(), 4, 2),
+                new CICO(10, 3, LocalDateTime.now(), LocalDateTime.now(), 4, 2)
         };
-        listRecentAdapter=new ListRecentAdapter(Arrays.asList(checkins));
+
+        // Chuyển đổi mảng thành danh sách có thể thay đổi được
+        List<CICO> checkinsList = new ArrayList<>(Arrays.asList(checkinsArray));
+
+        listRecentAdapter = new ListRecentAdapter(checkinsList);
         lstHis.setAdapter(listRecentAdapter);
 
+        // Xử lý sự kiện chọn ngày "From"
         edtFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar cal = Calendar.getInstance();
-
-                int year = cal.get(Calendar.YEAR);
-                int month = cal.get(Calendar.MONTH);
-                int day = cal.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog dialog = new DatePickerDialog(
-                        getActivity(),
-                        android.R.style.Theme_Holo_Dialog_MinWidth,
-                        mDateSetListernerFrom,
-                        year, month, day
-                );
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
+                showDatePickerDialog(edtFrom, mDateSetListenerFrom);
             }
         });
+
+        // Xử lý sự kiện chọn ngày "To"
         edtTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar cal = Calendar.getInstance();
-
-                int year = cal.get(Calendar.YEAR);
-                int month = cal.get(Calendar.MONTH);
-                int day = cal.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog dialog = new DatePickerDialog(
-                        getActivity(),
-                        android.R.style.Theme_Holo_Dialog_MinWidth,
-                        mDateSetListernerTo,
-                        year, month, day
-                );
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
+                showDatePickerDialog(edtTo, mDateSetListenerTo);
             }
         });
 
-        mDateSetListernerFrom = new DatePickerDialog.OnDateSetListener() {
+        // Thiết lập DatePickerDialog cho ngày "From"
+        mDateSetListenerFrom = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 month = month + 1;
-
-                // Tạo đối tượng Calendar với ngày đã chọn
                 Calendar cal = Calendar.getInstance();
                 cal.set(Calendar.YEAR, year);
                 cal.set(Calendar.MONTH, month - 1);
                 cal.set(Calendar.DAY_OF_MONTH, day);
 
-                // Lấy tên ngày trong tuần bằng tiếng Anh
                 String dayOfWeek = new SimpleDateFormat("EEE", new Locale("en", "EN")).format(cal.getTime());
 
-                Log.d(TAG, "onDateSet: dd/mm/yyyy " + day + "/" + month + "/" + year);
-                String date = dayOfWeek + ", " + day + "/" + month + "/" + year; // Hiển thị tên ngày trong tuần
-                edtFrom.setText(date);
+                fromDateString = dayOfWeek + ", " + day + "/" + month + "/" + year;
+                edtFrom.setText(fromDateString);
+
+                validateDates(); // Kiểm tra và cập nhật trạng thái khi chọn ngày "From"
             }
         };
 
-        mDateSetListernerTo = new DatePickerDialog.OnDateSetListener() {
+        // Thiết lập DatePickerDialog cho ngày "To"
+        mDateSetListenerTo = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 month = month + 1;
-
-                // Tạo đối tượng Calendar với ngày đã chọn
                 Calendar cal = Calendar.getInstance();
                 cal.set(Calendar.YEAR, year);
                 cal.set(Calendar.MONTH, month - 1);
                 cal.set(Calendar.DAY_OF_MONTH, day);
 
-                // Lấy tên ngày trong tuần bằng tiếng Anh
                 String dayOfWeek = new SimpleDateFormat("EEE", new Locale("en", "EN")).format(cal.getTime());
 
-                Log.d(TAG, "onDateSet: dd/mm/yyyy " + day + "/" + month + "/" + year);
-                String date = dayOfWeek + ", " + day + "/" + month + "/" + year; // Hiển thị tên ngày trong tuần
-                edtTo.setText(date);
+                toDateString = dayOfWeek + ", " + day + "/" + month + "/" + year;
+                edtTo.setText(toDateString);
+
+                validateDates(); // Kiểm tra và cập nhật trạng thái khi chọn ngày "To"
             }
         };
+
+        // Xử lý sự kiện nút "Search"
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (fromDateString == null || toDateString == null) {
+                    tvMessage.setText("Vui lòng chọn ngày 'From' và 'To' trước khi tìm kiếm.");
+                    return;
+                }
+
+                if (isToDateBeforeFromDate()) {
+                    tvMessage.setText("Ngày 'To' không được nhỏ hơn ngày 'From'.");
+                    btnSearch.setEnabled(false); // Vô hiệu hóa nút nếu ngày 'To' nhỏ hơn ngày 'From'
+                    return;
+                }
+                tvMessage.setText(""); // Xóa thông báo lỗi nếu không có lỗi
+                showDatesBetweenFromTo();
+            }
+        });
 
         return view;
+    }
+
+    // Hiển thị DatePickerDialog để chọn ngày
+    private void showDatePickerDialog(EditText editText, DatePickerDialog.OnDateSetListener listener) {
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog dialog = new DatePickerDialog(
+                getActivity(),
+                android.R.style.Theme_Holo_Dialog_MinWidth,
+                listener,
+                year, month, day
+        );
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+    }
+
+    // Kiểm tra xem ngày "To" có nhỏ hơn ngày "From" không
+    private boolean isToDateBeforeFromDate() {
+        if (fromDateString == null || toDateString == null) {
+            return false; // Trả về false nếu bất kỳ chuỗi ngày nào bị null
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd/MM/yyyy", new Locale("en", "EN"));
+        try {
+            Date fromDate = sdf.parse(fromDateString);
+            Date toDate = sdf.parse(toDateString);
+            return toDate.before(fromDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Kiểm tra ngày và cập nhật trạng thái của nút "Search"
+    private void validateDates() {
+        if (fromDateString == null || toDateString == null) {
+            tvMessage.setText("Vui lòng chọn ngày 'From' và 'To'.");
+            btnSearch.setEnabled(false); // Vô hiệu hóa nút "Search"
+            return;
+        }
+
+        if (isToDateBeforeFromDate()) {
+            tvMessage.setText("Ngày 'To' không được nhỏ hơn ngày 'From'.");
+            btnSearch.setEnabled(false); // Vô hiệu hóa nút "Search"
+        } else {
+            tvMessage.setText(""); // Xóa thông báo lỗi
+            btnSearch.setEnabled(true); // Kích hoạt lại nút "Search"
+        }
+    }
+
+    // Hiển thị danh sách các ngày từ "From" đến "To"
+    private void showDatesBetweenFromTo() {
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd/MM/yyyy", new Locale("en", "EN"));
+        List<CICO> dates = new ArrayList<>();
+        try {
+            Date fromDate = sdf.parse(fromDateString);
+            Date toDate = sdf.parse(toDateString);
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(fromDate);
+
+            int id = 1; // Giả định ID cho CICO, bạn có thể thay đổi dựa trên logic của bạn
+            while (!cal.getTime().after(toDate)) {
+                // Tạo đối tượng CICO với các giá trị giả định, bạn có thể điều chỉnh theo yêu cầu
+                LocalDateTime ciTime = LocalDateTime.now(); // Giả định thời gian vào
+                LocalDateTime coTime = LocalDateTime.now(); // Giả định thời gian ra
+                CICO cico = new CICO(id++, 2, ciTime, coTime, 1, 2);
+                dates.add(cico);
+
+                cal.add(Calendar.DAY_OF_MONTH, 1);
+            }
+
+            // Cập nhật ListView
+            listRecentAdapter.updateData(dates);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }
