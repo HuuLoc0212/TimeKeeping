@@ -48,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
         fragmentArrayList.add(new FragmentProfile());
         fragmentArrayList.add(new FragmentSetting());
 
+        //popup
+
+
         AdapterViewPager adapterViewPager = new AdapterViewPager(this, fragmentArrayList);
         //set Adapter
         pagerMain.setAdapter(adapterViewPager);
@@ -113,5 +116,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
     }
 }

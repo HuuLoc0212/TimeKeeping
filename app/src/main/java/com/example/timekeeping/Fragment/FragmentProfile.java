@@ -15,6 +15,7 @@ import com.example.timekeeping.model.Account;
 import com.example.timekeeping.model.Staff;
 
 import java.text.NumberFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
@@ -42,8 +43,9 @@ public class FragmentProfile extends Fragment {
         Staff staff= db.getStaffByAccount(account.getAccount());
 
         txtName.setText(staff.getName());
-        txtPosition.setText(String.valueOf(staff.getRole()));
-        txtBOD.setText(staff.getbOD().toString());
+        txtPosition.setText(db.getRoleById(staff.getRole()).getName());
+        txtBOD.setText(staff.getbOD()
+                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         txtEmail.setText(staff.getUsernanme());
         txtSalary.setText(NumberFormat
                 .getCurrencyInstance(

@@ -1,7 +1,5 @@
 package com.example.timekeeping.DB;
 
-import com.example.timekeeping.model.Staff;
-
 public class StaffTable {
     //table name
     final static private String TB_NAME="STAFF";
@@ -28,26 +26,10 @@ public class StaffTable {
                         "%s TEXT NOT NULL, " +
                         "%s TEXT NOT NULL, " +
                         "%s INTEGER NOT NULL, " +
-                        "%s NUMERIC NOT NULL," +
                         "%s TEXT UNIQUE," +
-                        "%s TEXT NOT NULL)",
+                        "%s TEXT NOT NULL," +
+                        "%s NUMERIC NOT NULL)",
                 TB_NAME,KEY_ID,KEY_NAME,KEY_BOD,KEY_ROLE,KEY_ACCOUNT,KEY_PASS,KEY_BASIC_SALARY);
-    }
-    //Insert Staff
-    public static String Insert(Staff staff){
-        String query=String.format("INSERT INTO %s (%s,%s,%s,%s,%s,%s)",TB_NAME,KEY_NAME,KEY_BOD,KEY_ROLE,KEY_ACCOUNT,KEY_PASS,KEY_BASIC_SALARY)
-                    +String.format("VALUES(%s,%s,%s,%s,1,%s);",staff.getName(),staff.getbOD(),staff.getRole(), staff.getUsernanme(), staff.getBasicSalary());
-        return query;
-    }
-    //Get Staff with ID
-    public static String GetByID(int id){
-        String query=String.format("SELECT * FROM %s WHERE %s = %s;",TB_NAME,KEY_ID,id);
-        return query;
-    }
-    //Get staff with username
-    public static String GetByAccount(String account){
-        String query=String.format("SELECT * FROM %s WHERE %s = %s;",TB_NAME,KEY_ACCOUNT,account);
-        return query;
     }
     //Get all staff
     public static String GetAll(){

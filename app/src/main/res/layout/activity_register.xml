@@ -52,18 +52,14 @@
                 android:textStyle="bold"
                 />
             <EditText
-                android:id="@+id/InputEmailAdress"
+                android:id="@+id/InputRegisterEmailAdress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:drawableEnd="@drawable/done_icon"/>
-            <TextView
-                android:id="@+id/txt_account_warning"
-                android:layout_width="match_parent"
-                android:layout_height="24dp"
-                android:inputType="number"
-                android:textSize="13sp"
-                android:textColor="@color/security"/>
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -72,18 +68,13 @@
                 android:textStyle="bold"
                 />
             <EditText
-                android:id="@+id/Inputpassword"
+                android:id="@+id/InputRegisterpassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:drawableEnd="@drawable/hide_icon"
                 android:longClickable="false"/>
-            <TextView
-                android:id="@+id/txt_pass_warning"
-                android:layout_width="match_parent"
-                android:layout_height="24dp"
-                android:textSize="13sp"
-                android:textColor="@color/security"/>
+
 
 
             <RelativeLayout
@@ -96,13 +87,7 @@
                     android:text="Remember me"
                     android:layout_centerVertical="true"
                     android:alpha="0.7"/>
-                <TextView
-                    android:id="@+id/Forgotpassword"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="I forgot my password?"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"/>
+
             </RelativeLayout>
 
             <View
@@ -113,7 +98,7 @@
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:text="Login"
+                android:text="Register"
                 app:cornerRadius="32dp"
                 />
             <View
@@ -163,13 +148,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="You don't have an account? "
+                    android:text="You have an account? "
                     android:textSize="15sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Register now"
+                    android:text="Login now"
                     android:textSize="15sp"
                     android:textColor="@color/lavender" />
             </LinearLayout>

@@ -10,6 +10,7 @@ import android.util.Log;
 
 
 import com.example.timekeeping.model.Account;
+import com.example.timekeeping.model.Role;
 import com.example.timekeeping.model.Staff;
 
 import java.time.LocalDate;
@@ -65,63 +66,39 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
     public Staff getStaffByID(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Staff staff = null;
+        SQLiteDatabase db = null;
         Cursor cursor = null;
+        Staff staff = null;
 
         try {
+            db = this.getReadableDatabase();
             cursor = db.query(
-                    StaffTable.getTbName(),
-                    null,
-                    StaffTable.getKeyId() + " = ?",
-                    new String[]{String.valueOf(id)},
-                    null,
-                    null,
-                    null
+                    StaffTable.getTbName(), // Table name
+                    null, // All columns
+                    StaffTable.getKeyId() + " = ?", // WHERE clause
+                    new String[]{String.valueOf(id)}, // WHERE args
+                    null, // GROUP BY clause
+                    null, // HAVING clause
+                    null // ORDER BY clause
             );
 
             if (cursor != null && cursor.moveToFirst()) {
-                // Retrieve column indices
-                int idIndex = cursor.getColumnIndexOrThrow(StaffTable.getKeyId());
-                int nameIndex = cursor.getColumnIndexOrThrow(StaffTable.getKeyName());
-                int bodIndex = cursor.getColumnIndexOrThrow(StaffTable.getKeyBod());
-                int roleIndex = cursor.getColumnIndexOrThrow(StaffTable.getKeyRole());
-                int accountIndex = cursor.getColumnIndexOrThrow(StaffTable.getKeyAccount());
-                int passIndex = cursor.getColumnIndexOrThrow(StaffTable.getKeyPass());
-                int salaryIndex = cursor.getColumnIndexOrThrow(StaffTable.getKeyBasicSalary());
-
-                // Extract values
-                int staffId = cursor.getInt(idIndex);
-                String name = cursor.getString(nameIndex);
-                String bodString = cursor.getString(bodIndex);
-                LocalDate bOD = null;
-                if (bodString != null) {
-                    bOD = LocalDate.parse(bodString);
-                }
-                int role = cursor.getInt(roleIndex);
-                String username = cursor.getString(accountIndex);
-                String password = cursor.getString(passIndex);
-                double basicSalary = cursor.getDouble(salaryIndex);
-
-                // Create Staff object
-                staff = new Staff(staffId, name, bOD, role, username, password, basicSalary);
-            } else {
-                // Handle case where no data is found
+                // Extract data from the cursor
+                staff = new Staff(cursor.getInt(0), cursor.getString(1), LocalDate.parse(cursor.getString(2)),cursor.getInt(3),cursor.getString(4),cursor.getString(5),cursor.getDouble(6));
             }
         } catch (Exception e) {
-            // Handle exceptions
         } finally {
-            // Close cursor and database
+
             if (cursor != null) {
                 cursor.close();
             }
-            db.close();
+            if (db != null) {
+                db.close();
+            }
         }
 
         return staff;
     }
-
-
     public Staff getStaffByAccount(String account) {
         SQLiteDatabase db = null;
         Cursor cursor = null;
@@ -156,7 +133,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return staff;
     }
-
     public List<Staff> getAllStaffs() {
         List<Staff>  staffList = new ArrayList<>();
 
@@ -171,7 +147,40 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return staffList;
     }
+    public Role getRoleById(int id) {
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        Role role = null;
 
+        try {
+            db = this.getReadableDatabase();
+            cursor = db.query(
+                    RoleTable.getTbName(), // Table name
+                    null, // All columns
+                    RoleTable.getKeyId() + " = ?", // WHERE clause
+                    new String[]{String.valueOf(id)}, // WHERE args
+                    null, // GROUP BY clause
+                    null, // HAVING clause
+                    null // ORDER BY clause
+            );
+
+            if (cursor != null && cursor.moveToFirst()) {
+                // Extract data from the cursor
+                role = new Role(cursor.getInt(0), cursor.getString(1));
+            }
+        } catch (Exception e) {
+        } finally {
+
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
+        }
+
+        return role;
+    }
     //login
     public void createLoginTable(SQLiteDatabase db) {
         try {
@@ -181,7 +190,6 @@ public class DBHelper extends SQLiteOpenHelper {
             Log.e("DB_ERROR", "Error creating login table", e);
         }
     }
-
     public void addLogin(Account account){
         SQLiteDatabase db= this.getWritableDatabase();
 
@@ -192,7 +200,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert(LoginTable.getTbName(),null,values);
         db.close();
     }
-    public void deleteAll(){
+    public void deleteAllAccount(){
         SQLiteDatabase db= this.getWritableDatabase();
         db.execSQL(LoginTable.DeleteAll());
         db.close();
@@ -212,6 +220,26 @@ public class DBHelper extends SQLiteOpenHelper {
         return accountList;
     }
 
+    //role
+    public void createRoleTable(SQLiteDatabase db) {
+        try {
+            db.execSQL(RoleTable.Create());
+            Log.d("DB_SUCCESS", "Login table created successfully.");
+        } catch (SQLException e) {
+            Log.e("DB_ERROR", "Error creating login table", e);
+        }
+    }
+    public void addRole(Role role){
+        SQLiteDatabase db= this.getWritableDatabase();
+
+        ContentValues values= new ContentValues();
+        values.put(RoleTable.getKeyId(), role.getId());
+        values.put(RoleTable.getKeyName(),role.getName());;
+
+        db.insert(RoleTable.getTbName(),null,values);
+        db.close();
+    }
+
 
     public void dropTableIfExit(SQLiteDatabase db,String tableName){
         String query=String.format("DROP TABLE IF EXISTS %s", tableName);
@@ -222,11 +250,13 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         createStaffTable(sqLiteDatabase);
         createLoginTable(sqLiteDatabase);
+        createRoleTable(sqLiteDatabase);
     }
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         dropTableIfExit(sqLiteDatabase,StaffTable.getTbName());
         dropTableIfExit(sqLiteDatabase,LoginTable.getTbName());
+        dropTableIfExit(sqLiteDatabase,RoleTable.getTbName());
         onCreate(sqLiteDatabase);
     }
 }
