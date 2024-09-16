@@ -56,9 +56,7 @@ public class LoginActivity extends AppCompatActivity {
                 else {
                     staff=db.getStaffByAccount(email.getText().toString());
                     if(staff==null){
-
                         txt_account_warning.setText("Email incorrect!!");
-
                     }else {
                         if(!staff.getPass().equals(password.getText().toString())){
                         txt_pass_warning.setText("Password incorrect!!");
