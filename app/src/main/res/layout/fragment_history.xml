@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical"
     tools:context=".Fragment.FragmentHistory">
@@ -23,7 +24,7 @@
         android:layout_weight="1"
         android:orientation="vertical"
         android:paddingHorizontal="20dp"
-        android:paddingBottom="70dp">
+        android:paddingBottom="20dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,6 +41,7 @@
                 android:textColor="@color/black"
                 android:text="From:"/>
                 <EditText
+                    android:id="@+id/edtFrom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"
@@ -64,6 +66,7 @@
                 android:textColor="@color/black"
                 android:text="To:"/>
             <EditText
+                android:id="@+id/edtTo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
@@ -78,7 +81,17 @@
                 android:layout_weight="1"
                 android:layout_margin="5dp"
                 android:inputType="date"/>
+
         </LinearLayout>
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Search"
+            android:layout_gravity="center"
+            app:cornerRadius="32dp"
+            android:layout_marginBottom="20dp"
+            />
             <ListView
                 android:id="@+id/lstHis"
                 android:layout_width="match_parent"
