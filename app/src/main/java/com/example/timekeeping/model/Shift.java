@@ -3,54 +3,33 @@ package com.example.timekeeping.model;
 import com.google.type.Date;
 import com.google.type.DateTime;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Shift {
     private int id;
-    private LocalDateTime date;
-    private LocalDateTime start;
-    private LocalDateTime end;
-    private int restTime;
+    private LocalDate date;
+    private LocalTime start;
+    private LocalTime end;
+    private Double restTime;
 
-    public Shift(int id,LocalDateTime date, LocalDateTime start, LocalDateTime end,int restTime) {
+    public Shift(int id,LocalDate date, LocalTime start, LocalTime end) {
         this.id = id;
         this.date=date;
         this.start = start;
         this.end = end;
-        this.restTime=restTime;
-    }
-    public Shift(int id,LocalDateTime date, LocalDateTime start, LocalDateTime end) {
-        this.id = id;
-        this.date=date;
-        this.start = start;
-        this.end = end;
-        this.restTime=3600;
-    }
-    public Shift(LocalDateTime date, LocalDateTime start, LocalDateTime end) {
-        this.date=date;
-        this.start = start;
-        this.end = end;
-        this.restTime=3600;
-    }
-    public Shift() {}
-
-
-    public int getRestTime() {
-        return restTime;
+        this.restTime=8.0-(Duration.between(start,end).toHours());
     }
 
-    public void setRestTime(int restTime) {
-        this.restTime = restTime;
-    }
-
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDateTime date) {
+    public Shift(LocalDate date, LocalTime start, LocalTime end) {
         this.date = date;
+        this.start = start;
+        this.end = end;
     }
+
+    public Shift() {}
 
     public int getId() {
         return id;
@@ -60,19 +39,35 @@ public class Shift {
         this.id = id;
     }
 
-    public LocalDateTime getStart() {
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public LocalTime getStart() {
         return start;
     }
 
-    public void setStart(LocalDateTime start) {
+    public void setStart(LocalTime start) {
         this.start = start;
     }
 
-    public LocalDateTime getEnd() {
+    public LocalTime getEnd() {
         return end;
     }
 
-    public void setEnd(LocalDateTime end) {
+    public void setEnd(LocalTime end) {
         this.end = end;
+    }
+
+    public Double getRestTime() {
+        return restTime;
+    }
+
+    public void setRestTime(Double restTime) {
+        this.restTime = restTime;
     }
 }

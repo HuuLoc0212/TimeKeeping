@@ -13,6 +13,7 @@ import java.util.List;
 
 public class ListRecentAdapter extends BaseAdapter {
     private List<CICO> lstCheckin;
+    private TextView txtState;
 
     public ListRecentAdapter(List<CICO> lstCheckin) {
         this.lstCheckin = lstCheckin;
