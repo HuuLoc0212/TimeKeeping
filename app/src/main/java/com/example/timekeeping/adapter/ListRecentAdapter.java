@@ -53,6 +53,9 @@ public class ListRecentAdapter extends BaseAdapter {
         ((TextView) recentItemView.findViewById(R.id.itemDate)).setText(String.valueOf(date));
         ((TextView) recentItemView.findViewById(R.id.itemTime)).setText(ciTime + " - " + coTime);
 
+        txtState= recentItemView.findViewById(R.id.tvState);
+
+
         return recentItemView;
     }
 

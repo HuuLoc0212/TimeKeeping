@@ -18,11 +18,13 @@ import com.example.timekeeping.R;
 import com.example.timekeeping.adapter.ListRecentAdapter;
 import com.example.timekeeping.model.Account;
 import com.example.timekeeping.model.CICO;
+import com.example.timekeeping.model.Shift;
 import com.example.timekeeping.model.Staff;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -70,18 +72,27 @@ public class FragmentHome extends Fragment {
             if (LocalDateTime.now().getDayOfWeek()!= DayOfWeek.SATURDAY)
             //today isn't Saturday
             {
-                txtCurrentShift.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                txtStart.setText("8:30");
-                txtEnd.setText("17:30");
+                txtCurrentShift.setText(LocalDate.now()
+                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                txtStart.setText(LocalTime.of(8,30)
+                        .format(DateTimeFormatter.ofPattern("HH:mm")));
+                txtEnd.setText(LocalTime.of(17,30)
+                        .format(DateTimeFormatter.ofPattern("HH:mm")));
+
             }
             else
             //today is Saturday
             {
-                txtCurrentShift.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                txtStart.setText("8:30");
-                txtEnd.setText("12:00");
+                txtCurrentShift.setText(LocalDate.now()
+                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                txtStart.setText(LocalTime.of(8,30)
+                        .format(DateTimeFormatter.ofPattern("HH:mm")));
+                txtEnd.setText(LocalTime.of(12,00)
+                        .format(DateTimeFormatter.ofPattern("HH:mm")));
             }
-
+            db.addShift(new Shift(LocalDate.parse(txtCurrentShift.getText(),DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                    LocalTime.parse(txtStart.getText(),DateTimeFormatter.ofPattern("HH:mm")),
+                    LocalTime.parse(txtEnd.getText(),DateTimeFormatter.ofPattern("HH:mm"))));
         }
         else
         //today is Sunday
@@ -95,12 +106,12 @@ public class FragmentHome extends Fragment {
 
         //fake recent history data
         CICO[]checkins={
-                new CICO(1,2,LocalDateTime.now(),LocalDateTime.now(),2,1),
-                new CICO(2,2,LocalDateTime.now(),LocalDateTime.now(),3,5),
-                new CICO(3,3,LocalDateTime.now(),LocalDateTime.now(),4,4),
-                new CICO(3,3,LocalDateTime.now(),LocalDateTime.now(),7,4),
-                new CICO(3,3,LocalDateTime.now(),LocalDateTime.now(),5,4),
-                new CICO(3,3,LocalDateTime.now(),LocalDateTime.now(),9,4),
+                new CICO(1,2,LocalDateTime.now(),LocalDateTime.now(),2),
+                new CICO(2,2,LocalDateTime.now(),LocalDateTime.now(),3),
+                new CICO(3,3,LocalDateTime.now(),LocalDateTime.now(),4),
+                new CICO(3,3,LocalDateTime.now(),LocalDateTime.now(),7),
+                new CICO(3,3,LocalDateTime.now(),LocalDateTime.now(),5),
+                new CICO(3,3,LocalDateTime.now(),LocalDateTime.now(),9),
         };
 
         //set adapter for Recent history listview

@@ -11,9 +11,12 @@ import android.util.Log;
 
 import com.example.timekeeping.model.Account;
 import com.example.timekeeping.model.Role;
+import com.example.timekeeping.model.Shift;
 import com.example.timekeeping.model.Staff;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,40 +150,8 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return staffList;
     }
-    public Role getRoleById(int id) {
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
-        Role role = null;
 
-        try {
-            db = this.getReadableDatabase();
-            cursor = db.query(
-                    RoleTable.getTbName(), // Table name
-                    null, // All columns
-                    RoleTable.getKeyId() + " = ?", // WHERE clause
-                    new String[]{String.valueOf(id)}, // WHERE args
-                    null, // GROUP BY clause
-                    null, // HAVING clause
-                    null // ORDER BY clause
-            );
 
-            if (cursor != null && cursor.moveToFirst()) {
-                // Extract data from the cursor
-                role = new Role(cursor.getInt(0), cursor.getString(1));
-            }
-        } catch (Exception e) {
-        } finally {
-
-            if (cursor != null) {
-                cursor.close();
-            }
-            if (db != null) {
-                db.close();
-            }
-        }
-
-        return role;
-    }
     //login
     public void createLoginTable(SQLiteDatabase db) {
         try {
@@ -239,6 +210,161 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert(RoleTable.getTbName(),null,values);
         db.close();
     }
+    public Role getRoleById(int id) {
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        Role role = null;
+
+        try {
+            db = this.getReadableDatabase();
+            cursor = db.query(
+                    RoleTable.getTbName(), // Table name
+                    null, // All columns
+                    RoleTable.getKeyId() + " = ?", // WHERE clause
+                    new String[]{String.valueOf(id)}, // WHERE args
+                    null, // GROUP BY clause
+                    null, // HAVING clause
+                    null // ORDER BY clause
+            );
+
+            if (cursor != null && cursor.moveToFirst()) {
+                // Extract data from the cursor
+                role = new Role(cursor.getInt(0), cursor.getString(1));
+            }
+        } catch (Exception e) {
+        } finally {
+
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
+        }
+
+        return role;
+    }
+
+    //shift
+    public void createShiftTable(SQLiteDatabase db) {
+        try {
+            db.execSQL(ShiftTable.Create());
+            Log.d("DB_SUCCESS", "Shift table created successfully.");
+        } catch (SQLException e) {
+            Log.e("DB_ERROR", "Error creating login table", e);
+        }
+    }
+    public void addShift(Shift shift){
+        SQLiteDatabase db= this.getWritableDatabase();
+
+        ContentValues values= new ContentValues();
+        values.put(ShiftTable.getKeyDate(),shift.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        values.put(ShiftTable.getKeyStart(),shift.getStart().format(DateTimeFormatter.ofPattern("HH:mm")));
+        values.put(ShiftTable.getKeyEnd(),shift.getEnd().format(DateTimeFormatter.ofPattern("HH:mm")));
+
+        db.insert(ShiftTable.getTbName(),null,values);
+        db.close();
+    }
+    public Shift getShiftByDate(LocalDate date) {
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        Shift shift = null;
+
+        try {
+            db = this.getReadableDatabase();
+
+            // Định dạng LocalDate thành chuỗi theo định dạng lưu trong database
+            String formattedDate = date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+            cursor = db.query(
+                    ShiftTable.getTbName(), // Table name
+                    null, // All columns
+                    ShiftTable.getKeyDate() + " = ?", // WHERE clause
+                    new String[]{formattedDate}, // WHERE args
+                    null, // GROUP BY clause
+                    null, // HAVING clause
+                    null // ORDER BY clause
+            );
+
+            if (cursor != null && cursor.moveToFirst()) {
+                // Extract data from the cursor
+                shift = new Shift(
+                        cursor.getInt(0), // ID or primary key
+                        LocalDate.parse(cursor.getString(1), DateTimeFormatter.ofPattern("dd/MM/yyyy")), // Date column
+                        LocalTime.parse(cursor.getString(2), DateTimeFormatter.ofPattern("HH:mm")), // Start time
+                        LocalTime.parse(cursor.getString(3), DateTimeFormatter.ofPattern("HH:mm")) // End time
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // In ra lỗi nếu có
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
+        }
+
+        return shift;
+    }
+
+    public Shift getShiftById(int id) {
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        Shift shift = null;
+
+        try {
+            db = this.getReadableDatabase();
+            cursor = db.query(
+                    ShiftTable.getTbName(), // Table name
+                    null, // All columns
+                    ShiftTable.getKeyId() + " = ?", // WHERE clause
+                    new String[]{String.valueOf(id)}, // WHERE args
+                    null, // GROUP BY clause
+                    null, // HAVING clause
+                    null // ORDER BY clause
+            );
+
+            if (cursor != null && cursor.moveToFirst()) {
+                // Extract data from the cursor
+                shift = new Shift(cursor.getInt(0),
+                        LocalDate.parse(cursor.getString(1),DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                        LocalTime.parse(cursor.getString(2),DateTimeFormatter.ofPattern("HH:mm")),
+                        LocalTime.parse(cursor.getString(3),DateTimeFormatter.ofPattern("HH:mm")));
+            }
+        } catch (Exception e) {
+        } finally {
+
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
+        }
+
+        return shift;
+    }
+    public List<Shift> getAllShifts() {
+        List<Shift>  shiftList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(ShiftTable.GetAll(), null);
+        cursor.moveToFirst();
+
+        while(cursor.isAfterLast() == false) {
+            Shift shift = new Shift(cursor.getInt(0),
+                    LocalDate.parse(cursor.getString(1),DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                    LocalTime.parse(cursor.getString(2),DateTimeFormatter.ofPattern("HH:mm")),
+                    LocalTime.parse(cursor.getString(3),DateTimeFormatter.ofPattern("HH:mm")));
+            shiftList.add(shift);
+            cursor.moveToNext();
+        }
+        return shiftList;
+    }
+
+
 
 
     public void dropTableIfExit(SQLiteDatabase db,String tableName){
@@ -251,12 +377,14 @@ public class DBHelper extends SQLiteOpenHelper {
         createStaffTable(sqLiteDatabase);
         createLoginTable(sqLiteDatabase);
         createRoleTable(sqLiteDatabase);
+        createShiftTable(sqLiteDatabase);
     }
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         dropTableIfExit(sqLiteDatabase,StaffTable.getTbName());
         dropTableIfExit(sqLiteDatabase,LoginTable.getTbName());
         dropTableIfExit(sqLiteDatabase,RoleTable.getTbName());
+        dropTableIfExit(sqLiteDatabase,ShiftTable.getTbName());
         onCreate(sqLiteDatabase);
     }
 }

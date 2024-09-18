@@ -13,21 +13,23 @@ public class Shift {
     private LocalDate date;
     private LocalTime start;
     private LocalTime end;
-    private Double restTime;
+    private Double breakTime;
 
     public Shift(int id,LocalDate date, LocalTime start, LocalTime end) {
         this.id = id;
         this.date=date;
         this.start = start;
         this.end = end;
-        this.restTime=8.0-(Duration.between(start,end).toHours());
+        this.breakTime=8.0-(Duration.between(start,end).toHours());
     }
 
     public Shift(LocalDate date, LocalTime start, LocalTime end) {
         this.date = date;
         this.start = start;
         this.end = end;
+        this.breakTime=8.0-(Duration.between(start,end).toHours());
     }
+
 
     public Shift() {}
 
@@ -63,11 +65,11 @@ public class Shift {
         this.end = end;
     }
 
-    public Double getRestTime() {
-        return restTime;
+    public Double getBreakTime() {
+        return breakTime;
     }
 
-    public void setRestTime(Double restTime) {
-        this.restTime = restTime;
+    public void setBreakTime(Double restTime) {
+        this.breakTime = restTime;
     }
 }
