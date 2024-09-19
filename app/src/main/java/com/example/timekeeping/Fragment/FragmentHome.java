@@ -176,6 +176,7 @@ public class FragmentHome extends Fragment {
                 if (rows > 0) {
                     txtCO.setText(todayCICO.getCoTime().format(DateTimeFormatter.ofPattern("HH:mm")));
                     Toast.makeText(getActivity(),"Check-out succeed!!!", Toast.LENGTH_SHORT).show();
+                    btnCheckout.setEnabled(false);
                 } else {
                     System.out.println("Check-out failure!!!");
                 }
@@ -186,6 +187,4 @@ public class FragmentHome extends Fragment {
 
         return view;
     }
-
-//func
 }

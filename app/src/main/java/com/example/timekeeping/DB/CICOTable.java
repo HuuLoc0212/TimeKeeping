@@ -38,7 +38,7 @@ public class CICOTable {
                         "%s INTEGER NOT NULL, " +
                         "%s TEXT NOT NULL, " +
                         "%s TEXT, " +
-                        "%s INTEGER NOT NULL,)",
+                        "%s INTEGER NOT NULL)",
                 TB_NAME,KEY_ID,KEY_USER,KEY_CI,KEY_CO,KEY_SHIFT);
     }
     public static String GetAll(){
