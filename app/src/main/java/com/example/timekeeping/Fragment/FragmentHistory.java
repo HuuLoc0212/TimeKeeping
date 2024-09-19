@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -36,7 +35,6 @@ public class FragmentHistory extends Fragment {
     private static final String TAG = "Datetimepicker";
 
     private EditText edtFrom, edtTo;
-    private Button btnSearch;
     private TextView tvMessage; // TextView để hiển thị thông báo lỗi
     private DatePickerDialog.OnDateSetListener mDateSetListenerFrom;
     private DatePickerDialog.OnDateSetListener mDateSetListenerTo;
@@ -68,7 +66,6 @@ public class FragmentHistory extends Fragment {
         lstHis = view.findViewById(R.id.lstHis);
         edtFrom = view.findViewById(R.id.edtFrom);
         edtTo = view.findViewById(R.id.edtTo);
-        btnSearch = view.findViewById(R.id.btnLogin);
         tvMessage = view.findViewById(R.id.tvMessage); // TextView để hiển thị thông báo lỗi
 
         // Fake Data
@@ -123,6 +120,11 @@ public class FragmentHistory extends Fragment {
                 edtFrom.setText(fromDateString);
 
                 validateDates(); // Kiểm tra và cập nhật trạng thái khi chọn ngày "From"
+
+                // Kiểm tra nếu cả ngày "From" và "To" đều hợp lệ và hợp lý, sẽ hiển thị kết quả ngay lập tức
+                if (!isToDateBeforeFromDate() && toDateString != null) {
+                    showDatesBetweenFromTo();
+                }
             }
         };
 
@@ -142,27 +144,13 @@ public class FragmentHistory extends Fragment {
                 edtTo.setText(toDateString);
 
                 validateDates(); // Kiểm tra và cập nhật trạng thái khi chọn ngày "To"
+
+                // Kiểm tra nếu cả ngày "From" và "To" đều hợp lệ và hợp lý, sẽ hiển thị kết quả ngay lập tức
+                if (!isToDateBeforeFromDate() && fromDateString != null) {
+                    showDatesBetweenFromTo();
+                }
             }
         };
-
-        // Xử lý sự kiện nút "Search"
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (fromDateString == null || toDateString == null) {
-                    tvMessage.setText("Vui lòng chọn ngày 'From' và 'To' trước khi tìm kiếm.");
-                    return;
-                }
-
-                if (isToDateBeforeFromDate()) {
-                    tvMessage.setText("Ngày 'To' không được nhỏ hơn ngày 'From'.");
-                    btnSearch.setEnabled(false); // Vô hiệu hóa nút nếu ngày 'To' nhỏ hơn ngày 'From'
-                    return;
-                }
-                tvMessage.setText(""); // Xóa thông báo lỗi nếu không có lỗi
-                showDatesBetweenFromTo();
-            }
-        });
 
         return view;
     }
@@ -201,20 +189,17 @@ public class FragmentHistory extends Fragment {
         }
     }
 
-    // Kiểm tra ngày và cập nhật trạng thái của nút "Search"
+    // Kiểm tra ngày và cập nhật trạng thái của giao diện
     private void validateDates() {
         if (fromDateString == null || toDateString == null) {
             tvMessage.setText("Vui lòng chọn ngày 'From' và 'To'.");
-            btnSearch.setEnabled(false); // Vô hiệu hóa nút "Search"
             return;
         }
 
         if (isToDateBeforeFromDate()) {
             tvMessage.setText("Ngày 'To' không được nhỏ hơn ngày 'From'.");
-            btnSearch.setEnabled(false); // Vô hiệu hóa nút "Search"
         } else {
-            tvMessage.setText(""); // Xóa thông báo lỗi
-            btnSearch.setEnabled(true); // Kích hoạt lại nút "Search"
+            tvMessage.setText(""); // Xóa thông báo lỗi nếu không có lỗi
         }
     }
 
