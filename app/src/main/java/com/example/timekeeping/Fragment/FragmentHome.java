@@ -32,103 +32,147 @@ import java.util.List;
 
 public class FragmentHome extends Fragment {
 
-    private ListRecentAdapter listRecentAdapter;
-    private ListView lstHis;
-    private TextView txtName, txtRole, txtCurrentShift, txtStart, txtEnd;
+    private TextView txtName, txtRole, txtCurrentShift, txtStart, txtEnd, txtCI, txtCO, txtShift;
     private LinearLayout btnCheckin, btnCheckout;
     private DBHelper db;
+    private CICO todayCICO=null;
+    private Shift todayShift=null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_home, container, false);
 
-        db= new DBHelper(getActivity());
-
-        lstHis= view.findViewById(R.id.lstRecent);
         txtName=view.findViewById(R.id.txtName);
         txtRole=view.findViewById(R.id.txtPosition);
         txtCurrentShift=view.findViewById(R.id.tvCurrentshift);
         txtStart=view.findViewById(R.id.tvStart);
         txtEnd=view.findViewById(R.id.tvEnd);
+        txtCI=view.findViewById(R.id.tvCI);
+        txtCO=view.findViewById(R.id.tvCO);
+        txtShift=view.findViewById(R.id.tvShift);
         btnCheckin=view.findViewById(R.id.btnCheckin);
         btnCheckout=view.findViewById(R.id.btnCheckout);
+
+        db= new DBHelper(getActivity());
 
         //get staff information
         List<Account> lstAccount= db.getAllAccounts();
         Account account= lstAccount.get(lstAccount.size()-1);
         Staff staff= db.getStaffByAccount(account.getAccount());
 
+        //get staff's check-in
+        List<CICO> lstCICO=db.getCICOS(staff.getId());
+
+        //get today shift
+        todayShift=db.getShiftByDate(LocalDate.now());
+
         //set staff information
         txtName.setText(staff.getName());
         txtRole.setText(db.getRoleById(staff.getRole()).getName());
 
         //set shift information
-        if(LocalDateTime.now().getDayOfWeek()!= DayOfWeek.SUNDAY)
-        //today isn't Sunday
-        {
-            btnCheckin.setEnabled(true);
-            btnCheckout.setEnabled(true);
-            if (LocalDateTime.now().getDayOfWeek()!= DayOfWeek.SATURDAY)
-            //today isn't Saturday
-            {
-                txtCurrentShift.setText(LocalDate.now()
-                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                txtStart.setText(LocalTime.of(8,30)
-                        .format(DateTimeFormatter.ofPattern("HH:mm")));
-                txtEnd.setText(LocalTime.of(17,30)
-                        .format(DateTimeFormatter.ofPattern("HH:mm")));
+        if(todayShift==null){
+            if(LocalDateTime.now().getDayOfWeek()!= DayOfWeek.SUNDAY) {
 
+                if (LocalDateTime.now().getDayOfWeek()!= DayOfWeek.SATURDAY)
+                //today isn't Saturday
+                {
+                    txtCurrentShift.setText(LocalDate.now()
+                            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                    txtStart.setText(LocalTime.of(8,30)
+                            .format(DateTimeFormatter.ofPattern("HH:mm")));
+                    txtEnd.setText(LocalTime.of(17,30)
+                            .format(DateTimeFormatter.ofPattern("HH:mm")));
+                }
+                else
+                //today is Saturday
+                {
+                    txtCurrentShift.setText(LocalDate.now()
+                            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                    txtStart.setText(LocalTime.of(8,30)
+                            .format(DateTimeFormatter.ofPattern("HH:mm")));
+                    txtEnd.setText(LocalTime.of(12,00)
+                            .format(DateTimeFormatter.ofPattern("HH:mm")));
+                }
+                todayShift=new Shift(LocalDate.parse(txtCurrentShift.getText(),DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                        LocalTime.parse(txtStart.getText(),DateTimeFormatter.ofPattern("HH:mm")),
+                        LocalTime.parse(txtEnd.getText(),DateTimeFormatter.ofPattern("HH:mm")));
+                db.addShift(todayShift);
             }
-            else
-            //today is Saturday
-            {
-                txtCurrentShift.setText(LocalDate.now()
-                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                txtStart.setText(LocalTime.of(8,30)
-                        .format(DateTimeFormatter.ofPattern("HH:mm")));
-                txtEnd.setText(LocalTime.of(12,00)
-                        .format(DateTimeFormatter.ofPattern("HH:mm")));
+            else{
+                btnCheckin.setEnabled(false);
+                btnCheckout.setEnabled(false);
+                txtCurrentShift.setText("To day is weekend!!!");
+                txtStart.setText("None");
+                txtEnd.setText("None");
             }
-            db.addShift(new Shift(LocalDate.parse(txtCurrentShift.getText(),DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                    LocalTime.parse(txtStart.getText(),DateTimeFormatter.ofPattern("HH:mm")),
-                    LocalTime.parse(txtEnd.getText(),DateTimeFormatter.ofPattern("HH:mm"))));
         }
-        else
-        //today is Sunday
-        {
+        else {
+            txtCurrentShift.setText(todayShift.getDate()
+                    .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            txtStart.setText(todayShift.getStart()
+                    .format(DateTimeFormatter.ofPattern("HH:mm")));
+            txtEnd.setText(todayShift.getEnd()
+                    .format(DateTimeFormatter.ofPattern("HH:mm")));
+        }
+
+
+        //check today is checked-in
+        for(CICO cico : lstCICO){
+            if(cico.getShift()==todayShift.getId()){
+                todayCICO=cico;
+                break;
+            }
+        }
+        //show today's check-in and set check-in, check-out buttons state
+        if(todayCICO!=null){
             btnCheckin.setEnabled(false);
+            btnCheckout.setEnabled(true);
+            txtShift.setText(todayShift
+                    .getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            txtCI.setText(todayCICO.getCiTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+            if(todayCICO.getCoTime()!=null){
+                btnCheckout.setEnabled(false);
+                txtCO.setText(todayCICO.getCoTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+            }
+            else {
+                txtCO.setText("None");
+            }
+        }
+        else {
+
+            btnCheckin.setEnabled(true);
             btnCheckout.setEnabled(false);
-            txtCurrentShift.setText("To day is weekend!!!");
-            txtStart.setText("None");
-            txtEnd.setText("None");
         }
 
-        //fake recent history data
-        CICO[]checkins={
-                new CICO(1,2,LocalDateTime.now(),LocalDateTime.now(),2),
-                new CICO(2,2,LocalDateTime.now(),LocalDateTime.now(),3),
-                new CICO(3,3,LocalDateTime.now(),LocalDateTime.now(),4),
-                new CICO(3,3,LocalDateTime.now(),LocalDateTime.now(),7),
-                new CICO(3,3,LocalDateTime.now(),LocalDateTime.now(),5),
-                new CICO(3,3,LocalDateTime.now(),LocalDateTime.now(),9),
-        };
-
-        //set adapter for Recent history listview
-        listRecentAdapter=new ListRecentAdapter(Arrays.asList(checkins));
-        lstHis.setAdapter(listRecentAdapter);
-
-        //test onclick
         btnCheckin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(),"Checkin", Toast.LENGTH_SHORT).show();
+                //ss tg check in co wa gio lm hay ko
+                if(LocalTime.now().isBefore(todayShift.getEnd())){
+                    CICO cico=new CICO(staff.getId(),
+                            LocalDateTime.now(),
+                            db.getShiftByDate(LocalDate.now()).getId());
+                    db.addCICO(cico);
+                    txtShift.setText(db.getShiftById(cico.getShift()).getDate()
+                            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                    txtCI.setText(cico.getCiTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+                    txtCO.setText("None");
+                    btnCheckin.setEnabled(false);
+                    btnCheckout.setEnabled(true);
+                    Toast.makeText(getActivity(),"Add check-in succeed!!!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getActivity(),"Too late for check-in now!!!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(),"Checkout", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),String.valueOf(db.getCICOS(staff.getId()).size()), Toast.LENGTH_SHORT).show();
+
             }
         });
 

@@ -10,11 +10,13 @@ import android.util.Log;
 
 
 import com.example.timekeeping.model.Account;
+import com.example.timekeeping.model.CICO;
 import com.example.timekeeping.model.Role;
 import com.example.timekeeping.model.Shift;
 import com.example.timekeeping.model.Staff;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -195,9 +197,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public void createRoleTable(SQLiteDatabase db) {
         try {
             db.execSQL(RoleTable.Create());
-            Log.d("DB_SUCCESS", "Login table created successfully.");
+            Log.d("DB_SUCCESS", "Role table created successfully.");
         } catch (SQLException e) {
-            Log.e("DB_ERROR", "Error creating login table", e);
+            Log.e("DB_ERROR", "Error creating Role table", e);
         }
     }
     public void addRole(Role role){
@@ -251,7 +253,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL(ShiftTable.Create());
             Log.d("DB_SUCCESS", "Shift table created successfully.");
         } catch (SQLException e) {
-            Log.e("DB_ERROR", "Error creating login table", e);
+            Log.e("DB_ERROR", "Error creating Shift table", e);
         }
     }
     public void addShift(Shift shift){
@@ -308,7 +310,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return shift;
     }
-
     public Shift getShiftById(int id) {
         SQLiteDatabase db = null;
         Cursor cursor = null;
@@ -364,6 +365,127 @@ public class DBHelper extends SQLiteOpenHelper {
         return shiftList;
     }
 
+    //CICO
+    public void createCICOTable(SQLiteDatabase db) {
+        try {
+            db.execSQL(CICOTable.Create());
+            Log.d("DB_SUCCESS", "CICO table created successfully.");
+        } catch (SQLException e) {
+            Log.e("DB_ERROR", "Error creating CICO table", e);
+        }
+    }
+    public List<CICO> getCICOS(int userID) {
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        List<CICO>cicoList=new ArrayList<>();
+
+        try {
+            db = this.getReadableDatabase();
+            cursor = db.query(
+                    CICOTable.getTbName(), // Table name
+                    null, // All columns
+                    CICOTable.getKeyUser() + " = ?", // WHERE clause
+                    new String[]{String.valueOf(userID)}, // WHERE args
+                    null, // GROUP BY clause
+                    null, // HAVING clause
+                    null // ORDER BY clause
+            );
+
+            if (cursor != null && cursor.moveToFirst()) {
+                // Extract data from the cursor
+                while(cursor.isAfterLast() == false) {
+                    CICO cico;
+                    if(cursor.getString(3)!=null){
+                        cico = new CICO(cursor.getInt(0),
+                                cursor.getInt(1),
+                                LocalDateTime.parse(cursor.getString(2),DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")),
+                                LocalDateTime.parse(cursor.getString(3),DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")),
+                                cursor.getInt(4));
+                    }
+                    else {
+                        cico = new CICO(cursor.getInt(0),
+                                cursor.getInt(1),
+                                LocalDateTime.parse(cursor.getString(2), DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")),
+                                null,
+                                cursor.getInt(4));
+                    }
+                    cicoList.add(cico);
+                    cursor.moveToNext();
+                }
+            }
+        } catch (Exception e) {
+        } finally {
+
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
+        }
+
+        return cicoList;
+    }
+    public CICO getCICOById(int id) {
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        CICO cico = null;
+
+        try {
+            db = this.getReadableDatabase();
+            cursor = db.query(
+                    CICOTable.getTbName(), // Table name
+                    null, // All columns
+                    CICOTable.getKeyId() + " = ?", // WHERE clause
+                    new String[]{String.valueOf(id)}, // WHERE args
+                    null, // GROUP BY clause
+                    null, // HAVING clause
+                    null // ORDER BY clause
+            );
+
+            if (cursor != null && cursor.moveToFirst()) {
+                // Extract data from the cursor
+                if(cursor.getString(3)!=null){
+                    cico = new CICO(cursor.getInt(0),
+                            cursor.getInt(1),
+                            LocalDateTime.parse(cursor.getString(2),DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")),
+                            LocalDateTime.parse(cursor.getString(3),DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")),
+                            cursor.getInt(4));
+                }
+                else {
+                    cico = new CICO(cursor.getInt(0),
+                            cursor.getInt(1),
+                            LocalDateTime.parse(cursor.getString(2), DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")),
+                            null,
+                            cursor.getInt(4));
+                }
+
+            }
+        } catch (Exception e) {
+        } finally {
+
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
+        }
+
+        return cico;
+    }
+    public void addCICO(CICO cico){
+        SQLiteDatabase db= this.getWritableDatabase();
+
+        ContentValues values= new ContentValues();
+        values.put(CICOTable.getKeyUser(), cico.getUser());
+        values.put(CICOTable.getKeyCi(),cico.getCiTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")));
+        values.put(CICOTable.getKeyShift(),cico.getShift());
+
+        db.insert(CICOTable.getTbName(),null,values);
+        db.close();
+    }
+
 
 
 
@@ -378,6 +500,7 @@ public class DBHelper extends SQLiteOpenHelper {
         createLoginTable(sqLiteDatabase);
         createRoleTable(sqLiteDatabase);
         createShiftTable(sqLiteDatabase);
+        createCICOTable(sqLiteDatabase);
     }
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
@@ -385,6 +508,7 @@ public class DBHelper extends SQLiteOpenHelper {
         dropTableIfExit(sqLiteDatabase,LoginTable.getTbName());
         dropTableIfExit(sqLiteDatabase,RoleTable.getTbName());
         dropTableIfExit(sqLiteDatabase,ShiftTable.getTbName());
+        dropTableIfExit(sqLiteDatabase,CICOTable.getTbName());
         onCreate(sqLiteDatabase);
     }
 }
