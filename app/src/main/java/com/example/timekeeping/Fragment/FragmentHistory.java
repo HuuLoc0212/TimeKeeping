@@ -16,9 +16,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.timekeeping.DB.DBHelper;
 import com.example.timekeeping.R;
 import com.example.timekeeping.adapter.ListRecentAdapter;
+import com.example.timekeeping.model.Account;
 import com.example.timekeeping.model.CICO;
+import com.example.timekeeping.model.Staff;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,21 +44,8 @@ public class FragmentHistory extends Fragment {
 
     ListRecentAdapter listRecentAdapter;
     ListView lstHis;
+    private DBHelper db;
     private String fromDateString, toDateString;
-
-    public FragmentHistory() {
-    }
-
-    public static FragmentHistory newInstance(String param1, String param2) {
-        FragmentHistory fragment = new FragmentHistory();
-        Bundle args = new Bundle();
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,24 +58,15 @@ public class FragmentHistory extends Fragment {
         edtTo = view.findViewById(R.id.edtTo);
         tvMessage = view.findViewById(R.id.tvMessage); // TextView để hiển thị thông báo lỗi
 
-        // Fake Data
-        CICO[] checkinsArray = {
-                new CICO(1, 2, LocalDateTime.now(), LocalDateTime.now(), 1),
-                new CICO(2, 2, LocalDateTime.now(), LocalDateTime.now(), 5),
-                new CICO(3, 3, LocalDateTime.now(), LocalDateTime.now(), 4),
-                new CICO(4, 3, LocalDateTime.now(), LocalDateTime.now(), 4),
-                new CICO(5, 3, LocalDateTime.now(), LocalDateTime.now(), 4),
-                new CICO(6, 3, LocalDateTime.now(), LocalDateTime.now(), 4),
-                new CICO(7, 3, LocalDateTime.now(), LocalDateTime.now(), 4),
-                new CICO(8, 3, LocalDateTime.now(), LocalDateTime.now(), 4),
-                new CICO(9, 3, LocalDateTime.now(), LocalDateTime.now(), 4),
-                new CICO(10, 3, LocalDateTime.now(), LocalDateTime.now(), 4)
-        };
+        db = new DBHelper(getActivity());
+        //get staff information
+        List<Account> lstAccount= db.getAllAccounts();
+        Account account= lstAccount.get(lstAccount.size()-1);
+        Staff staff= db.getStaffByAccount(account.getAccount());
 
-        // Chuyển đổi mảng thành danh sách có thể thay đổi được
-        List<CICO> checkinsList = new ArrayList<>(Arrays.asList(checkinsArray));
+        List<CICO> checkinsArray = db.getCICOS( staff.getId() );
 
-        listRecentAdapter = new ListRecentAdapter(checkinsList);
+        listRecentAdapter = new ListRecentAdapter(checkinsArray);
         lstHis.setAdapter(listRecentAdapter);
 
         // Xử lý sự kiện chọn ngày "From"
@@ -139,10 +120,8 @@ public class FragmentHistory extends Fragment {
                 cal.set(Calendar.DAY_OF_MONTH, day);
 
                 String dayOfWeek = new SimpleDateFormat("EEE", new Locale("en", "EN")).format(cal.getTime());
-
                 toDateString = dayOfWeek + ", " + day + "/" + month + "/" + year;
                 edtTo.setText(toDateString);
-
                 validateDates(); // Kiểm tra và cập nhật trạng thái khi chọn ngày "To"
 
                 // Kiểm tra nếu cả ngày "From" và "To" đều hợp lệ và hợp lý, sẽ hiển thị kết quả ngay lập tức
@@ -151,7 +130,6 @@ public class FragmentHistory extends Fragment {
                 }
             }
         };
-
         return view;
     }
 
@@ -221,12 +199,8 @@ public class FragmentHistory extends Fragment {
                 LocalDateTime coTime = LocalDateTime.now(); // Giả định thời gian ra
                 CICO cico = new CICO(id++, 2, ciTime, coTime, 1);
                 dates.add(cico);
-
                 cal.add(Calendar.DAY_OF_MONTH, 1);
             }
-
-            // Cập nhật ListView
-            listRecentAdapter.updateData(dates);
         } catch (ParseException e) {
             e.printStackTrace();
         }

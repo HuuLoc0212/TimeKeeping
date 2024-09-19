@@ -49,20 +49,15 @@ public class ListRecentAdapter extends BaseAdapter {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String date = checkin.getCiTime().format(dateFormatter);
         String ciTime = checkin.getCiTime().format(timeFormatter);
-        String coTime = checkin.getCoTime().format(timeFormatter);
+
         ((TextView) recentItemView.findViewById(R.id.itemDate)).setText(String.valueOf(date));
-        ((TextView) recentItemView.findViewById(R.id.itemTime)).setText(ciTime + " - " + coTime);
-
+        if (checkin.getCoTime() == null) {
+            ((TextView) recentItemView.findViewById(R.id.itemTime)).setText(ciTime + " -  None");
+        } else{
+            String coTime = checkin.getCoTime().format(timeFormatter);
+            ((TextView) recentItemView.findViewById(R.id.itemTime)).setText(ciTime + " - " + coTime);
+        }
         txtState= recentItemView.findViewById(R.id.tvState);
-
-
         return recentItemView;
-    }
-
-    // Phương thức updateData để cập nhật danh sách dữ liệu
-    public void updateData(List<CICO> newData) {
-        this.lstCheckin.clear(); // Xóa danh sách hiện tại
-        this.lstCheckin.addAll(newData); // Thêm dữ liệu mới
-        notifyDataSetChanged(); // Thông báo ListView làm mới dữ liệu
     }
 }
