@@ -12,7 +12,7 @@ public class CICO {
     private LocalDateTime coTime;
     private int shift;
 
-    public CICO(int id, int user, LocalDateTime ciTime, LocalDateTime coTime, int shift, int state) {
+    public CICO(int id, int user, LocalDateTime ciTime, LocalDateTime coTime, int shift) {
         this.id = id;
         this.user = user;
         this.ciTime = ciTime;
@@ -20,7 +20,7 @@ public class CICO {
         this.shift = shift;
     }
 
-    public CICO(int user, LocalDateTime ciTime, LocalDateTime coTime, int shift, int state) {
+    public CICO(int user, LocalDateTime ciTime, LocalDateTime coTime, int shift) {
         this.user = user;
         this.ciTime = ciTime;
         this.coTime = coTime;

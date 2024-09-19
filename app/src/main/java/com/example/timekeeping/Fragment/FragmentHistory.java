@@ -70,16 +70,16 @@ public class FragmentHistory extends Fragment {
 
         // Fake Data
         CICO[] checkinsArray = {
-                new CICO(1, 2, LocalDateTime.now(), LocalDateTime.now(), 1, 2),
-                new CICO(2, 2, LocalDateTime.now(), LocalDateTime.now(), 5, 6),
-                new CICO(3, 3, LocalDateTime.now(), LocalDateTime.now(), 4, 2),
-                new CICO(4, 3, LocalDateTime.now(), LocalDateTime.now(), 4, 2),
-                new CICO(5, 3, LocalDateTime.now(), LocalDateTime.now(), 4, 2),
-                new CICO(6, 3, LocalDateTime.now(), LocalDateTime.now(), 4, 2),
-                new CICO(7, 3, LocalDateTime.now(), LocalDateTime.now(), 4, 2),
-                new CICO(8, 3, LocalDateTime.now(), LocalDateTime.now(), 4, 2),
-                new CICO(9, 3, LocalDateTime.now(), LocalDateTime.now(), 4, 2),
-                new CICO(10, 3, LocalDateTime.now(), LocalDateTime.now(), 4, 2)
+                new CICO(1, 2, LocalDateTime.now(), LocalDateTime.now(), 1),
+                new CICO(2, 2, LocalDateTime.now(), LocalDateTime.now(), 5),
+                new CICO(3, 3, LocalDateTime.now(), LocalDateTime.now(), 4),
+                new CICO(4, 3, LocalDateTime.now(), LocalDateTime.now(), 4),
+                new CICO(5, 3, LocalDateTime.now(), LocalDateTime.now(), 4),
+                new CICO(6, 3, LocalDateTime.now(), LocalDateTime.now(), 4),
+                new CICO(7, 3, LocalDateTime.now(), LocalDateTime.now(), 4),
+                new CICO(8, 3, LocalDateTime.now(), LocalDateTime.now(), 4),
+                new CICO(9, 3, LocalDateTime.now(), LocalDateTime.now(), 4),
+                new CICO(10, 3, LocalDateTime.now(), LocalDateTime.now(), 4)
         };
 
         // Chuyển đổi mảng thành danh sách có thể thay đổi được
@@ -219,7 +219,7 @@ public class FragmentHistory extends Fragment {
                 // Tạo đối tượng CICO với các giá trị giả định, bạn có thể điều chỉnh theo yêu cầu
                 LocalDateTime ciTime = LocalDateTime.now(); // Giả định thời gian vào
                 LocalDateTime coTime = LocalDateTime.now(); // Giả định thời gian ra
-                CICO cico = new CICO(id++, 2, ciTime, coTime, 1, 2);
+                CICO cico = new CICO(id++, 2, ciTime, coTime, 1);
                 dates.add(cico);
 
                 cal.add(Calendar.DAY_OF_MONTH, 1);

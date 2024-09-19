@@ -13,6 +13,7 @@ import java.util.List;
 
 public class ListRecentAdapter extends BaseAdapter {
     private List<CICO> lstCheckin;
+    private TextView txtState;
 
     public ListRecentAdapter(List<CICO> lstCheckin) {
         this.lstCheckin = lstCheckin;
@@ -51,6 +52,9 @@ public class ListRecentAdapter extends BaseAdapter {
         String coTime = checkin.getCoTime().format(timeFormatter);
         ((TextView) recentItemView.findViewById(R.id.itemDate)).setText(String.valueOf(date));
         ((TextView) recentItemView.findViewById(R.id.itemTime)).setText(ciTime + " - " + coTime);
+
+        txtState= recentItemView.findViewById(R.id.tvState);
+
 
         return recentItemView;
     }
