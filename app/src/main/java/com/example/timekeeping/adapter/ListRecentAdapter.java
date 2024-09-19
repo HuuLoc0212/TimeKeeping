@@ -1,16 +1,20 @@
 package com.example.timekeeping.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+
 import com.example.timekeeping.DB.DBHelper;
 import com.example.timekeeping.R;
 import com.example.timekeeping.model.CICO;
 
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -20,9 +24,10 @@ public class ListRecentAdapter extends BaseAdapter {
     private DBHelper db;
     private Context context;
 
-    public ListRecentAdapter(Context context,List<CICO> lstCheckin) {
+    public ListRecentAdapter(Context context,List<CICO> lstCheckin,DBHelper db) {
         this.lstCheckin = lstCheckin;
         this.context=context;
+        this.db = db;
     }
 
     @Override
@@ -61,13 +66,25 @@ public class ListRecentAdapter extends BaseAdapter {
                     .format(DateTimeFormatter.ofPattern("HH:mm"))
                     + " -  None");
             txtState.setText("Incomplete");
-            txtState.setBackgroundResource(R.drawable.on_time_button);
+            txtState.setTextColor(ContextCompat.getColor(context, R.color.black));
+            txtState.setBackgroundResource(R.drawable.incomplete_button);
         } else{
             ((TextView) recentItemView.findViewById(R.id.itemTime)).setText(checkin.getCiTime()
                     .format(DateTimeFormatter.ofPattern("HH:mm"))
                     + " - "
                     + checkin.getCoTime()
                     .format(DateTimeFormatter.ofPattern("HH:mm")));
+            if(LocalTime.of(checkin.getCiTime().getHour(),checkin.getCiTime().getMinute())
+                    .isAfter(db.getShiftById(checkin.getShift()).getStart())){
+                txtState.setText("Late");
+                txtState.setTextColor(ContextCompat.getColor(context, R.color.red));
+                txtState.setBackgroundResource(R.drawable.late_button);
+            }
+            else {
+                txtState.setText("On time");
+                txtState.setTextColor(ContextCompat.getColor(context, R.color.green));
+                txtState.setBackgroundResource(R.drawable.on_time_button);
+            }
         }
 
         return recentItemView;
