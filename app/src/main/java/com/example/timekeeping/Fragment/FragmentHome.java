@@ -154,6 +154,7 @@ public class FragmentHome extends Fragment {
                     CICO cico=new CICO(staff.getId(),
                             LocalDateTime.now(),
                             db.getShiftByDate(LocalDate.now()).getId());
+                    Log.d("Log=======",String.valueOf( db.getShiftByDate(LocalDate.now()).getId()));
                     db.addCICO(cico);
                     txtShift.setText(db.getShiftById(cico.getShift()).getDate()
                             .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
@@ -176,6 +177,7 @@ public class FragmentHome extends Fragment {
                 if (rows > 0) {
                     txtCO.setText(todayCICO.getCoTime().format(DateTimeFormatter.ofPattern("HH:mm")));
                     Toast.makeText(getActivity(),"Check-out succeed!!!", Toast.LENGTH_SHORT).show();
+                    btnCheckout.setEnabled(false);
                 } else {
                     System.out.println("Check-out failure!!!");
                 }
@@ -186,6 +188,4 @@ public class FragmentHome extends Fragment {
 
         return view;
     }
-
-//func
 }

@@ -22,6 +22,7 @@ public class ListRecentAdapter extends BaseAdapter {
     public ListRecentAdapter(Context context, List<CICO> lstCheckin, DBHelper db) {
         this.lstCheckin = lstCheckin;
         this.context=context;
+        this.db=db;
     }
 
     @Override
