@@ -10,11 +10,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.timekeeping.DB.DBHelper;
 import com.example.timekeeping.R;
@@ -27,7 +27,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -35,10 +34,9 @@ import java.util.Locale;
 
 public class FragmentHistory extends Fragment {
 
-    private static final String TAG = "Datetimepicker";
-
     private EditText edtFrom, edtTo;
     private TextView tvMessage; // TextView để hiển thị thông báo lỗi
+    private Button btnFilter; // Nút để lọc kết quả
     private DatePickerDialog.OnDateSetListener mDateSetListenerFrom;
     private DatePickerDialog.OnDateSetListener mDateSetListenerTo;
 
@@ -56,18 +54,41 @@ public class FragmentHistory extends Fragment {
         lstHis = view.findViewById(R.id.lstHis);
         edtFrom = view.findViewById(R.id.edtFrom);
         edtTo = view.findViewById(R.id.edtTo);
-        tvMessage = view.findViewById(R.id.tvMessage); // TextView để hiển thị thông báo lỗi
+        tvMessage = view.findViewById(R.id.tvMessage);
+        btnFilter = view.findViewById(R.id.btnLogin);  // Nút Filter (đã đặt id là btnLogin)
 
         db = new DBHelper(getActivity());
-        //get staff information
-        List<Account> lstAccount= db.getAllAccounts();
-        Account account= lstAccount.get(lstAccount.size()-1);
-        Staff staff= db.getStaffByAccount(account.getAccount());
+        // Lấy thông tin tài khoản và nhân viên từ DB
+        List<Account> lstAccount = db.getAllAccounts();
+        Account account = lstAccount.get(lstAccount.size() - 1);
+        Staff staff = db.getStaffByAccount(account.getAccount());
 
-        List<CICO> checkinsArray = db.getCICOS( staff.getId() );
-
-        listRecentAdapter = new ListRecentAdapter(getActivity(),checkinsArray);
+        // Hiển thị toàn bộ lịch sử CICO ban đầu
+        List<CICO> checkinsArray = db.getCICOS(staff.getId());
+        listRecentAdapter = new ListRecentAdapter(getActivity(), checkinsArray,db);
         lstHis.setAdapter(listRecentAdapter);
+
+        // Xử lý sự kiện khi nhấn nút "Filter"
+        btnFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Kiểm tra nếu người dùng chưa chọn ngày From hoặc To
+                if (fromDateString == null || toDateString == null) {
+                    tvMessage.setText("Please select the dates \"From\" and \"To.\".");
+                    return; // Dừng lại nếu chưa chọn đủ ngày
+                }
+
+                // Kiểm tra nếu ngày 'From' lớn hơn ngày 'To'
+                if (isToDateBeforeFromDate()) {
+                    tvMessage.setText("The \"To\" date cannot be earlier than the \"From\" date.");
+                    return; // Dừng lại nếu ngày không hợp lệ
+                }
+
+                // Nếu kiểm tra hợp lệ, thực hiện tìm kiếm dữ liệu
+                tvMessage.setText(""); // Xóa thông báo lỗi
+                showDatesBetweenFromTo(); // Hiển thị danh sách kết quả
+            }
+        });
 
         // Xử lý sự kiện chọn ngày "From"
         edtFrom.setOnClickListener(new View.OnClickListener() {
@@ -99,13 +120,6 @@ public class FragmentHistory extends Fragment {
 
                 fromDateString = dayOfWeek + ", " + day + "/" + month + "/" + year;
                 edtFrom.setText(fromDateString);
-
-                validateDates(); // Kiểm tra và cập nhật trạng thái khi chọn ngày "From"
-
-                // Kiểm tra nếu cả ngày "From" và "To" đều hợp lệ và hợp lý, sẽ hiển thị kết quả ngay lập tức
-                if (!isToDateBeforeFromDate() && toDateString != null) {
-                    showDatesBetweenFromTo();
-                }
             }
         };
 
@@ -122,14 +136,9 @@ public class FragmentHistory extends Fragment {
                 String dayOfWeek = new SimpleDateFormat("EEE", new Locale("en", "EN")).format(cal.getTime());
                 toDateString = dayOfWeek + ", " + day + "/" + month + "/" + year;
                 edtTo.setText(toDateString);
-                validateDates(); // Kiểm tra và cập nhật trạng thái khi chọn ngày "To"
-
-                // Kiểm tra nếu cả ngày "From" và "To" đều hợp lệ và hợp lý, sẽ hiển thị kết quả ngay lập tức
-                if (!isToDateBeforeFromDate() && fromDateString != null) {
-                    showDatesBetweenFromTo();
-                }
             }
         };
+
         return view;
     }
 
@@ -152,10 +161,6 @@ public class FragmentHistory extends Fragment {
 
     // Kiểm tra xem ngày "To" có nhỏ hơn ngày "From" không
     private boolean isToDateBeforeFromDate() {
-        if (fromDateString == null || toDateString == null) {
-            return false; // Trả về false nếu bất kỳ chuỗi ngày nào bị null
-        }
-
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd/MM/yyyy", new Locale("en", "EN"));
         try {
             Date fromDate = sdf.parse(fromDateString);
@@ -163,21 +168,7 @@ public class FragmentHistory extends Fragment {
             return toDate.before(fromDate);
         } catch (ParseException e) {
             e.printStackTrace();
-            return false;
-        }
-    }
-
-    // Kiểm tra ngày và cập nhật trạng thái của giao diện
-    private void validateDates() {
-        if (fromDateString == null || toDateString == null) {
-            tvMessage.setText("Vui lòng chọn ngày 'From' và 'To'.");
-            return;
-        }
-
-        if (isToDateBeforeFromDate()) {
-            tvMessage.setText("Ngày 'To' không được nhỏ hơn ngày 'From'.");
-        } else {
-            tvMessage.setText(""); // Xóa thông báo lỗi nếu không có lỗi
+            return true;
         }
     }
 
@@ -192,11 +183,11 @@ public class FragmentHistory extends Fragment {
             Calendar cal = Calendar.getInstance();
             cal.setTime(fromDate);
 
-            int id = 1; // Giả định ID cho CICO, bạn có thể thay đổi dựa trên logic của bạn
+            int id = 1; // Giả định ID cho CICO
             while (!cal.getTime().after(toDate)) {
-                // Tạo đối tượng CICO với các giá trị giả định, bạn có thể điều chỉnh theo yêu cầu
-                LocalDateTime ciTime = LocalDateTime.now(); // Giả định thời gian vào
-                LocalDateTime coTime = LocalDateTime.now(); // Giả định thời gian ra
+                // Tạo đối tượng CICO với các giá trị giả định, điều chỉnh theo yêu cầu
+                LocalDateTime ciTime = LocalDateTime.now();
+                LocalDateTime coTime = LocalDateTime.now();
                 CICO cico = new CICO(id++, 2, ciTime, coTime, 1);
                 dates.add(cico);
                 cal.add(Calendar.DAY_OF_MONTH, 1);

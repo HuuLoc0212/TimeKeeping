@@ -1,7 +1,6 @@
 package com.example.timekeeping.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -20,7 +19,7 @@ public class ListRecentAdapter extends BaseAdapter {
     private DBHelper db;
     private Context context;
 
-    public ListRecentAdapter(Context context,List<CICO> lstCheckin) {
+    public ListRecentAdapter(Context context, List<CICO> lstCheckin, DBHelper db) {
         this.lstCheckin = lstCheckin;
         this.context=context;
     }
