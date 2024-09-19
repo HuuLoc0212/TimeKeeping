@@ -485,7 +485,34 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert(CICOTable.getTbName(),null,values);
         db.close();
     }
+    public int checkout(CICO cico) {
+        SQLiteDatabase db = null;
+        int rowsAffected = 0;
 
+        try {
+            db = this.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+
+            values.put(CICOTable.getKeyCo(), cico.getCoTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")));
+
+            // Điều kiện để xác định bản ghi cần cập nhật (ví dụ theo ID hoặc user)
+            String whereClause = CICOTable.getKeyId() + " = ?";
+            String[] whereArgs = {String.valueOf(cico.getId())};
+
+            // Thực hiện update, trả về số bản ghi bị ảnh hưởng
+            rowsAffected = db.update(CICOTable.getTbName(), values, whereClause, whereArgs);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
+        }
+
+        return rowsAffected; // Trả về số hàng bị ảnh hưởng
+    }
 
 
 

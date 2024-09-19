@@ -161,7 +161,7 @@ public class FragmentHome extends Fragment {
                     txtCO.setText("None");
                     btnCheckin.setEnabled(false);
                     btnCheckout.setEnabled(true);
-                    Toast.makeText(getActivity(),"Add check-in succeed!!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),"Check-in succeed!!!", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Toast.makeText(getActivity(),"Too late for check-in now!!!", Toast.LENGTH_SHORT).show();
@@ -171,7 +171,15 @@ public class FragmentHome extends Fragment {
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(),String.valueOf(db.getCICOS(staff.getId()).size()), Toast.LENGTH_SHORT).show();
+                todayCICO.setCoTime(LocalDateTime.now());
+                int rows = db.checkout(todayCICO);
+                if (rows > 0) {
+                    txtCO.setText(todayCICO.getCoTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+                    Toast.makeText(getActivity(),"Check-out succeed!!!", Toast.LENGTH_SHORT).show();
+                } else {
+                    System.out.println("Check-out failure!!!");
+                }
+
 
             }
         });
