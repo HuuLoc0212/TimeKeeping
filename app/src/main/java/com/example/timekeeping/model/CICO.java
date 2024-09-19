@@ -1,5 +1,6 @@
 package com.example.timekeeping.model;
 
+import com.example.timekeeping.DB.DBHelper;
 import com.google.type.DateTime;
 
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ public class CICO {
     private LocalDateTime ciTime;
     private LocalDateTime coTime;
     private int shift;
+
 
     public CICO(int id, int user, LocalDateTime ciTime, LocalDateTime coTime, int shift) {
         this.id = id;

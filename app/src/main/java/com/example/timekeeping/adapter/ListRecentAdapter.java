@@ -1,10 +1,13 @@
 package com.example.timekeeping.adapter;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.example.timekeeping.DB.DBHelper;
 import com.example.timekeeping.R;
 import com.example.timekeeping.model.CICO;
 
@@ -14,9 +17,12 @@ import java.util.List;
 public class ListRecentAdapter extends BaseAdapter {
     private List<CICO> lstCheckin;
     private TextView txtState;
+    private DBHelper db;
+    private Context context;
 
-    public ListRecentAdapter(List<CICO> lstCheckin) {
+    public ListRecentAdapter(Context context,List<CICO> lstCheckin) {
         this.lstCheckin = lstCheckin;
+        this.context=context;
     }
 
     @Override
@@ -37,27 +43,33 @@ public class ListRecentAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         View recentItemView;
+
         if (view == null) {
             recentItemView = View.inflate(viewGroup.getContext(), R.layout.recent_item, null);
         } else {
             recentItemView = view;
         }
 
+        txtState= recentItemView.findViewById(R.id.tvState);
+
         CICO checkin = getItem(i);
 
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String date = checkin.getCiTime().format(dateFormatter);
-        String ciTime = checkin.getCiTime().format(timeFormatter);
-
-        ((TextView) recentItemView.findViewById(R.id.itemDate)).setText(String.valueOf(date));
+        ((TextView) recentItemView.findViewById(R.id.itemDate)).setText(checkin.getCiTime()
+                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         if (checkin.getCoTime() == null) {
-            ((TextView) recentItemView.findViewById(R.id.itemTime)).setText(ciTime + " -  None");
+            ((TextView) recentItemView.findViewById(R.id.itemTime)).setText(checkin.getCiTime()
+                    .format(DateTimeFormatter.ofPattern("HH:mm"))
+                    + " -  None");
+            txtState.setText("Incomplete");
+            txtState.setBackgroundResource(R.drawable.on_time_button);
         } else{
-            String coTime = checkin.getCoTime().format(timeFormatter);
-            ((TextView) recentItemView.findViewById(R.id.itemTime)).setText(ciTime + " - " + coTime);
+            ((TextView) recentItemView.findViewById(R.id.itemTime)).setText(checkin.getCiTime()
+                    .format(DateTimeFormatter.ofPattern("HH:mm"))
+                    + " - "
+                    + checkin.getCoTime()
+                    .format(DateTimeFormatter.ofPattern("HH:mm")));
         }
-        txtState= recentItemView.findViewById(R.id.tvState);
+
         return recentItemView;
     }
 }

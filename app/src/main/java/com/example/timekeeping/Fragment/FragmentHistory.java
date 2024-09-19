@@ -66,7 +66,7 @@ public class FragmentHistory extends Fragment {
 
         List<CICO> checkinsArray = db.getCICOS( staff.getId() );
 
-        listRecentAdapter = new ListRecentAdapter(checkinsArray);
+        listRecentAdapter = new ListRecentAdapter(getActivity(),checkinsArray);
         lstHis.setAdapter(listRecentAdapter);
 
         // Xử lý sự kiện chọn ngày "From"
