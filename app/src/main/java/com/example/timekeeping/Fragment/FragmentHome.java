@@ -151,13 +151,13 @@ public class FragmentHome extends Fragment {
             public void onClick(View view) {
                 //ss tg check in co wa gio lm hay ko
                 if(LocalTime.now().isBefore(todayShift.getEnd())){
-                    CICO cico=new CICO(staff.getId(),
+                    todayCICO=new CICO(staff.getId(),
                             LocalDateTime.now(),
                             db.getShiftByDate(LocalDate.now()).getId());
-                    db.addCICO(cico);
-                    txtShift.setText(db.getShiftById(cico.getShift()).getDate()
+                    db.addCICO(todayCICO);
+                    txtShift.setText(db.getShiftById(todayCICO.getShift()).getDate()
                             .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                    txtCI.setText(cico.getCiTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+                    txtCI.setText(todayCICO.getCiTime().format(DateTimeFormatter.ofPattern("HH:mm")));
                     txtCO.setText("None");
                     btnCheckin.setEnabled(false);
                     btnCheckout.setEnabled(true);
