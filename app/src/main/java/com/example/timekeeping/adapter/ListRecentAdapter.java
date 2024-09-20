@@ -10,10 +10,8 @@ import com.example.timekeeping.DB.DBHelper;
 import com.example.timekeeping.R;
 import com.example.timekeeping.model.CICO;
 
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 
 public class ListRecentAdapter extends BaseAdapter {
     private List<CICO> lstCheckin;
@@ -63,23 +61,13 @@ public class ListRecentAdapter extends BaseAdapter {
                     .format(DateTimeFormatter.ofPattern("HH:mm"))
                     + " -  None");
             txtState.setText("Incomplete");
-            txtState.setTextColor(context.getResources().getColor(R.color.black));
-            txtState.setBackgroundResource(R.drawable.incomplete_button);
+            txtState.setBackgroundResource(R.drawable.on_time_button);
         } else{
             ((TextView) recentItemView.findViewById(R.id.itemTime)).setText(checkin.getCiTime()
                     .format(DateTimeFormatter.ofPattern("HH:mm"))
                     + " - "
                     + checkin.getCoTime()
                     .format(DateTimeFormatter.ofPattern("HH:mm")));
-            if(LocalTime.of(checkin.getCiTime().getHour(),checkin.getCiTime().getMinute()).isAfter(db.getShiftById(checkin.getShift()).getStart())){
-                txtState.setText("Late");
-                txtState.setTextColor(context.getResources().getColor(R.color.red));
-                txtState.setBackgroundResource(R.drawable.late_button);
-            }else {
-                txtState.setText("On Time");
-                txtState.setTextColor(context.getResources().getColor(R.color.green));
-                txtState.setBackgroundResource(R.drawable.on_time_button);
-            }
         }
 
         return recentItemView;
