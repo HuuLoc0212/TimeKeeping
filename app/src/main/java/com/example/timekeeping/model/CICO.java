@@ -28,6 +28,9 @@ public class CICO {
         this.shift = shift;
     }
 
+    public CICO() {
+    }
+
     public int getId() {
         return id;
     }
