@@ -10,6 +10,7 @@ import com.example.timekeeping.DB.DBHelper;
 import com.example.timekeeping.R;
 import com.example.timekeeping.model.CICO;
 
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -68,6 +69,16 @@ public class ListRecentAdapter extends BaseAdapter {
                     + " - "
                     + checkin.getCoTime()
                     .format(DateTimeFormatter.ofPattern("HH:mm")));
+            if(LocalTime.of(checkin.getCiTime().getHour(), checkin.getCiTime().getMinute()).isAfter(db.getShiftById(checkin.getShift()).getStart())) {
+                txtState.setText("Late");
+                txtState.setTextColor(context.getResources().getColor(R.color.red));
+                txtState.setBackgroundResource(R.drawable.late_button);
+            }
+            else {
+                txtState.setText("On time");
+                txtState.setTextColor(context.getResources().getColor(R.color.green));
+                txtState.setBackgroundResource(R.drawable.on_time_button);
+            }
         }
 
         return recentItemView;
