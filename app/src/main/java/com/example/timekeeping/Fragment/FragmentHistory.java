@@ -25,9 +25,7 @@ import com.example.timekeeping.adapter.ListRecentAdapter;
 import com.example.timekeeping.model.Account;
 import com.example.timekeeping.model.CICO;
 import com.example.timekeeping.model.Staff;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -49,6 +47,7 @@ public class FragmentHistory extends Fragment {
     ListRecentAdapter listRecentAdapter;
     ListView lstHis;
     private DBHelper db;
+    private String fromDateString, toDateString;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,12 +61,7 @@ public class FragmentHistory extends Fragment {
         tvMessage = view.findViewById(R.id.tvMessage);
         btnFilter = view.findViewById(R.id.btnLogin);  // Nút Filter (đã đặt id là btnLogin)
 
-
-        edtTo.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        edtFrom.setText(LocalDate.now().minusDays(7).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-
         db = new DBHelper(getActivity());
-
         // Lấy thông tin tài khoản và nhân viên từ DB
         List<Account> lstAccount = db.getAllAccounts();
         Account account = lstAccount.get(lstAccount.size() - 1);
@@ -75,28 +69,30 @@ public class FragmentHistory extends Fragment {
 
         // Truy xuất tất cả dữ liệu CICO cho nhân viên
         List<CICO> allCICOList = db.getCICOS(staff.getId());
-
-
+        lstHis.setAdapter(new ListRecentAdapter(getActivity(), db.getCICOS(staff.getId()), db));
 
         // Xử lý sự kiện khi nhấn nút "Filter"
         btnFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Kiểm tra nếu người dùng chưa chọn ngày From hoặc To
-                if (edtFrom.getText() == null || edtTo.getText() == null) {
+                if (fromDateString == null || toDateString == null) {
                     tvMessage.setText("Please select the dates \"From\" and \"To.\".");
                     return; // Dừng lại nếu chưa chọn đủ ngày
-                }else {
-                    // Kiểm tra nếu ngày 'From' lớn hơn ngày 'To'
-                    if (isToDateBeforeFromDate(edtFrom,edtTo)) {
-                        tvMessage.setText("The \"To\" date cannot be earlier than the \"From\" date.");
-                    }
                 }
 
+                // Kiểm tra nếu ngày 'From' lớn hơn ngày 'To'
+                if (isToDateBeforeFromDate()) {
+                    tvMessage.setText("The \"To\" date cannot be earlier than the \"From\" date.");
+                    return; // Dừng lại nếu ngày không hợp lệ
+                }
+
+                // Nếu kiểm tra hợp lệ, thực hiện truy xuất dữ liệu từ DB
+                tvMessage.setText(""); // Xóa thông báo lỗi
+
+
                 // Lọc danh sách theo khoảng ngày đã chọn
-         List<CICO>  filteredCICOList = filterCICOByDateRange(allCICOList,
-                        getDateFromTextView(edtFrom),
-                        getDateFromTextView(edtTo));
+                List<CICO> filteredCICOList = filterCICOByDateRange(allCICOList, fromDateString, toDateString);
 
                 if (filteredCICOList.isEmpty()) {
                     tvMessage.setText("No records found for the selected dates.");
@@ -106,23 +102,6 @@ public class FragmentHistory extends Fragment {
                 // Cập nhật ListView với dữ liệu mới
                 listRecentAdapter = new ListRecentAdapter(getActivity(), filteredCICOList, db);
                 lstHis.setAdapter(listRecentAdapter);
-            }
-        });
-        // Khi người dùng chạm vào EditText "From" hoặc "To", thông báo lỗi sẽ biến mất
-        edtFrom.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction()==MotionEvent.ACTION_UP)
-                    tvMessage.setText("");
-                return false;
-            }
-        });  tvMessage.setText(""); // Xóa thông báo lỗi
-        edtTo.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction()==MotionEvent.ACTION_UP)
-                    tvMessage.setText("");
-                return false;
             }
         });
 
@@ -152,8 +131,8 @@ public class FragmentHistory extends Fragment {
                 cal.set(Calendar.MONTH, month - 1);
                 cal.set(Calendar.DAY_OF_MONTH, day);
 
-
-                edtFrom.setText(formatDate(cal.getTime()));
+                fromDateString = formatDate(cal.getTime());
+                edtFrom.setText(fromDateString);
             }
         };
 
@@ -167,22 +146,39 @@ public class FragmentHistory extends Fragment {
                 cal.set(Calendar.MONTH, month - 1);
                 cal.set(Calendar.DAY_OF_MONTH, day);
 
-
-                edtTo.setText(formatDate(cal.getTime()));
+                toDateString = formatDate(cal.getTime());
+                edtTo.setText(toDateString);
             }
         };
 
-        //Show popup
+        // Khi người dùng chạm vào EditText "From" hoặc "To", thông báo lỗi sẽ biến mất
+        edtFrom.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction()==MotionEvent.ACTION_UP)
+                    tvMessage.setText("");
+                return false;
+            }
+        });  tvMessage.setText(""); // Xóa thông báo lỗi
+        edtTo.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction()==MotionEvent.ACTION_UP)
+                    tvMessage.setText("");
+                return false;
+            }
+        });
         lstHis.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                CICO cico = (CICO) adapterView.getItemAtPosition(i);
+                CICO cico = listRecentAdapter.getItem(i);
                 InitDialog(cico);
             }
         });
-
         return view;
     }
+
+
     private void InitDialog(CICO cico) {
         TextView txtDateTv, txtCI, txtCO, txtStatus;
 
@@ -219,12 +215,6 @@ public class FragmentHistory extends Fragment {
         dialog.show();
     }
 
-    private String getDateFromTextView(EditText editText) {
-
-        return  LocalDate.parse(editText.getText()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-
-    }
-
     // Hiển thị DatePickerDialog để chọn ngày
     private void showDatePickerDialog(EditText editText, DatePickerDialog.OnDateSetListener listener) {
         Calendar cal = Calendar.getInstance();
@@ -243,26 +233,25 @@ public class FragmentHistory extends Fragment {
     }
 
     // Kiểm tra xem ngày "To" có nhỏ hơn ngày "From" không
-    private boolean isToDateBeforeFromDate(EditText editText , EditText editText2) {
+    private boolean isToDateBeforeFromDate() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
-        LocalDate fromDate = LocalDate.parse(editText.getText(), formatter);
-        LocalDate toDate = LocalDate.parse(editText2.getText(), formatter);
+        LocalDate fromDate = LocalDate.parse(fromDateString, formatter);
+        LocalDate toDate = LocalDate.parse(toDateString, formatter);
         return toDate.isBefore(fromDate);
     }
 
     // Lọc danh sách CICO theo khoảng ngày
     private List<CICO> filterCICOByDateRange(List<CICO> allCICOList, String fromDateString, String toDateString) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
+        LocalDate fromDate = LocalDate.parse(fromDateString, formatter);
+        LocalDate toDate = LocalDate.parse(toDateString, formatter);
+
         List<CICO> filteredList = new ArrayList<>();
-        if (fromDateString !=null && toDateString !=null){
-            LocalDate fromDate = LocalDate.parse(fromDateString, formatter);
-            LocalDate toDate = LocalDate.parse(toDateString, formatter);
-            for (CICO cico : allCICOList) {
-                LocalDate checkInDate = cico.getCiTime().toLocalDate();
-                if ((checkInDate.isAfter(fromDate) || checkInDate.isEqual(fromDate)) &&
-                        (checkInDate.isBefore(toDate) || checkInDate.isEqual(toDate))) {
-                    filteredList.add(cico);
-                }
+        for (CICO cico : allCICOList) {
+            LocalDate checkInDate = cico.getCiTime().toLocalDate();
+            if ((checkInDate.isAfter(fromDate) || checkInDate.isEqual(fromDate)) &&
+                    (checkInDate.isBefore(toDate) || checkInDate.isEqual(toDate))) {
+                filteredList.add(cico);
             }
         }
         return filteredList;
@@ -274,4 +263,3 @@ public class FragmentHistory extends Fragment {
         return sdf.format(date);
     }
 }
-

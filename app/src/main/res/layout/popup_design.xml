@@ -99,10 +99,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:padding="5dp"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="6dp"
             android:layout_gravity="end"
             android:text="On Time"
             android:textSize="15sp" />
-        
+
     </LinearLayout>
 </FrameLayout>
