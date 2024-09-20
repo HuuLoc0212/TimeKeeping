@@ -118,11 +118,4 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-    public void reloadFragment(int position) {
-        AdapterViewPager adapter = (AdapterViewPager) pagerMain.getAdapter();
-        if (adapter != null) {
-            adapter.notifyDataSetChanged(); // Báo hiệu adapter rằng dữ liệu đã thay đổi
-            pagerMain.setCurrentItem(position); // Đảm bảo ViewPager hiển thị lại fragment mong muốn
-        }
-    }
 }

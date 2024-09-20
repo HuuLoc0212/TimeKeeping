@@ -155,6 +155,7 @@ public class FragmentHome extends Fragment {
                             LocalDateTime.now(),
                             db.getShiftByDate(LocalDate.now()).getId());
                     db.addCICO(cico);
+                    todayCICO=cico;
                     txtShift.setText(db.getShiftById(cico.getShift()).getDate()
                             .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                     txtCI.setText(cico.getCiTime().format(DateTimeFormatter.ofPattern("HH:mm")));
@@ -171,14 +172,16 @@ public class FragmentHome extends Fragment {
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                todayCICO.setCoTime(LocalDateTime.now());
-                int rows = db.checkout(todayCICO);
+                List<CICO> cicos=db.getCICOS(staff.getId());
+                CICO cico= cicos.get(cicos.size()-1);
+                cico.setCoTime(LocalDateTime.now());
+                int rows = db.checkout(cico);
                 if (rows > 0) {
-                    txtCO.setText(todayCICO.getCoTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+                    txtCO.setText(cico.getCoTime().format(DateTimeFormatter.ofPattern("HH:mm")));
                     Toast.makeText(getActivity(),"Check-out succeed!!!", Toast.LENGTH_SHORT).show();
                     btnCheckout.setEnabled(false);
                 } else {
-                    System.out.println("Check-out failure!!!");
+                    Toast.makeText(getActivity(),"Check-out failure!!!", Toast.LENGTH_SHORT).show();
                 }
 
 
