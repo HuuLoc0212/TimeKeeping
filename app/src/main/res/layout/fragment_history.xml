@@ -55,6 +55,8 @@
                 android:drawableEnd="@drawable/baseline_calendar_month_24"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
+                android:focusable="false"
+                android:clickable="true"
                 android:inputType="date"/>
             <TextView
                 android:layout_marginHorizontal="5dp"
@@ -72,6 +74,8 @@
                 android:layout_marginHorizontal="10dp"
                 android:textColor="@color/black"
                 android:background="@drawable/border_edit_text"
+                android:focusable="false"
+                android:clickable="true"
                 android:hint="DD/MM/YYYY"
                 android:textSize="15sp"
                 android:padding="5dp"
@@ -110,7 +114,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
             <Button
-                android:id="@+id/btnLogin"
+                android:id="@+id/btnFilter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"

@@ -3,6 +3,7 @@ package com.example.timekeeping.model;
 import com.google.type.Date;
 import com.google.type.DateTime;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,14 +21,25 @@ public class Shift {
         this.date=date;
         this.start = start;
         this.end = end;
-        this.breakTime=8.0-(Duration.between(start,end).toHours());
+        if(this.date.getDayOfWeek()== DayOfWeek.SATURDAY){
+            this.breakTime=0.0;
+        }
+        else {
+            this.breakTime=(Duration.between(start,end).toHours())-8.0;
+        }
+
     }
 
     public Shift(LocalDate date, LocalTime start, LocalTime end) {
         this.date = date;
         this.start = start;
         this.end = end;
-        this.breakTime=8.0-(Duration.between(start,end).toHours());
+        if(this.date.getDayOfWeek()== DayOfWeek.SATURDAY){
+            this.breakTime=0.0;
+        }
+        else {
+            this.breakTime=8.0-(Duration.between(start,end).toHours());
+        }
     }
 
 

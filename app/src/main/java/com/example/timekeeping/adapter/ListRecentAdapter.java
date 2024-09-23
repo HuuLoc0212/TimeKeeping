@@ -1,6 +1,9 @@
 package com.example.timekeeping.adapter;
 
+
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -62,7 +65,8 @@ public class ListRecentAdapter extends BaseAdapter {
                     .format(DateTimeFormatter.ofPattern("HH:mm"))
                     + " -  None");
             txtState.setText("Incomplete");
-            txtState.setBackgroundResource(R.drawable.on_time_button);
+            txtState.setTextColor(context.getResources().getColor(R.color.black));
+            txtState.setBackgroundResource(R.drawable.incomplete_button);
         } else{
             ((TextView) recentItemView.findViewById(R.id.itemTime)).setText(checkin.getCiTime()
                     .format(DateTimeFormatter.ofPattern("HH:mm"))
