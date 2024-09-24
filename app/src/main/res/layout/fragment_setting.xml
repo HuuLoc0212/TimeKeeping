@@ -235,7 +235,7 @@
                         android:layout_height="40dp"
                         android:layout_weight="3"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/trans" />
+                        android:src="@drawable/translate" />
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -398,16 +398,13 @@
                 android:layout_marginVertical="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
-
-
                 <ImageView
                     android:id="@+id/logoutIcon"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_weight="3"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/off" />
+                    android:src="@drawable/logout" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -426,7 +423,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="3"
-                    android:src="@drawable/ic_logout_24"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     />
