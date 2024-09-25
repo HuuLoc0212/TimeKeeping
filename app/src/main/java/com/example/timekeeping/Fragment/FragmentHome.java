@@ -1,5 +1,9 @@
 package com.example.timekeeping.Fragment;
 
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -20,9 +24,18 @@ import com.example.timekeeping.model.Account;
 import com.example.timekeeping.model.CICO;
 import com.example.timekeeping.model.Shift;
 import com.example.timekeeping.model.Staff;
+import com.example.timekeeping.untils.EnableCallback;
+import com.example.timekeeping.untils.NetworkCheck;
+import com.google.android.material.snackbar.Snackbar;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.URL;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,10 +44,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 
 public class FragmentHome extends Fragment {
-    private final String companyIP="192.168.2.58";
     private TextView txtName, txtRole, txtCurrentShift, txtStart, txtEnd, txtCI, txtCO, txtShift;
     private LinearLayout btnCheckin, btnCheckout;
     private DBHelper db;
@@ -152,74 +165,95 @@ public class FragmentHome extends Fragment {
         btnCheckin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //ss tg check in co wa gio lm hay ko
-                String currentIP = getIPAddress(true);
-                Toast.makeText(getActivity(),currentIP, Toast.LENGTH_SHORT).show();
-
-//                if(LocalTime.now().isBefore(todayShift.getEnd())){
-//                    CICO cico=new CICO(staff.getId(),
-//                            LocalDateTime.now(),
-//                            db.getShiftByDate(LocalDate.now()).getId());
-//                    db.addCICO(cico);
-//                    todayCICO=cico;
-//                    txtShift.setText(db.getShiftById(cico.getShift()).getDate()
-//                            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-//                    txtCI.setText(cico.getCiTime().format(DateTimeFormatter.ofPattern("HH:mm")));
-//                    txtCO.setText("None");
-//                    btnCheckin.setEnabled(false);
-//                    btnCheckout.setEnabled(true);
-//                    Toast.makeText(getActivity(),"Check-in succeed!!!", Toast.LENGTH_SHORT).show();
-//                }
-//                else {
-//                    Toast.makeText(getActivity(),"Too late for check-in now!!!", Toast.LENGTH_SHORT).show();
-//                }
+                NetworkCheck networkCheck = new NetworkCheck(getActivity());
+                networkCheck.getPublicIP(new EnableCallback() {
+                    @Override
+                    public void onResult(boolean enable) {
+                        if (enable) {
+                            if(LocalTime.now().isBefore(todayShift.getEnd())){
+                                CICO cico=new CICO(staff.getId(),
+                                        LocalDateTime.now(),
+                                        db.getShiftByDate(LocalDate.now()).getId());
+                                db.addCICO(cico);
+                                todayCICO=cico;
+                                txtShift.setText(db.getShiftById(cico.getShift()).getDate()
+                                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                                txtCI.setText(cico.getCiTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+                                txtCO.setText("None");
+                                btnCheckin.setEnabled(false);
+                                btnCheckout.setEnabled(true);
+//                                Toast.makeText(getActivity(),"Check-in succeed!!!", Toast.LENGTH_SHORT).show();
+                                Snackbar.make(getActivity().findViewById(android.R.id.content), "Đây là một thông báo", Snackbar.LENGTH_LONG).show();
+                                Log.d("Check", "Check-in succeed!!!");
+                            }
+                            else {
+                                Snackbar.make(getActivity().findViewById(android.R.id.content), "Too late for check-in now!!!", Snackbar.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Snackbar.make(getActivity().findViewById(android.R.id.content), "No permission to execute!!!", Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+                });
             }
         });
         //ss tg check out co wa gio lm hay ko
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<CICO> cicos=db.getCICOS(staff.getId());
-                CICO cico= cicos.get(cicos.size()-1);
-                cico.setCoTime(LocalDateTime.now());
-                int rows = db.checkout(cico);
-                if (rows > 0) {
-                    txtCO.setText(cico.getCoTime().format(DateTimeFormatter.ofPattern("HH:mm")));
-                    Toast.makeText(getActivity(),"Check-out succeed!!!", Toast.LENGTH_SHORT).show();
-                    btnCheckout.setEnabled(false);
-                } else {
-                    Toast.makeText(getActivity(),"Check-out failure!!!", Toast.LENGTH_SHORT).show();
+                if(!LocalDate.now().isAfter(todayShift.getDate())){
+                    List<CICO> cicos=db.getCICOS(staff.getId());
+                    CICO cico= cicos.get(cicos.size()-1);
+                    cico.setCoTime(LocalDateTime.now());
+                    int rows = db.checkout(cico);
+                    if (rows > 0) {
+                        txtCO.setText(cico.getCoTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+                        Toast.makeText(getActivity(),"Check-out succeed!!!", Toast.LENGTH_SHORT).show();
+                        btnCheckout.setEnabled(false);
+                    } else {
+                        Toast.makeText(getActivity(),"Check-out failure!!!", Toast.LENGTH_SHORT).show();
+                    }
                 }
-
-
+                else {
+                    Toast.makeText(getActivity(),"Too late for check-out", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         return view;
     }
+    public static String getIPAddress(boolean useIPv4) {
+        try {
+            // Lấy danh sách tất cả các interface mạng
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = interfaces.nextElement();
+                Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
 
-        public  String getIPAddress(boolean useIPv4) {
-            try {
-                List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
-                for (NetworkInterface intf : interfaces) {
-                    List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
-                    for (InetAddress addr : addrs) {
-                        if (!addr.isLoopbackAddress()) {
-                            String sAddr = addr.getHostAddress();
-                            boolean isIPv4 = sAddr.indexOf(':') < 0;
-                            if (useIPv4) {
-                                if (isIPv4) return sAddr;
-                            } else {
-                                if (!isIPv4) {
-                                    int delim = sAddr.indexOf('%'); // drop ip6 port suffix
-                                    return delim < 0 ? sAddr : sAddr.substring(0, delim);
-                                }
+                // Lặp qua các địa chỉ trong interface
+                while (addresses.hasMoreElements()) {
+                    InetAddress inetAddress = addresses.nextElement();
+
+                    // Bỏ qua các địa chỉ loopback (localhost)
+                    if (!inetAddress.isLoopbackAddress()) {
+                        String address = inetAddress.getHostAddress();
+
+                        // Kiểm tra nếu địa chỉ là IPv4 hoặc IPv6 dựa trên tham số
+                        boolean isIPv4 = address.indexOf(':') < 0;
+                        if (useIPv4) {
+                            if (isIPv4) return address;
+                        } else {
+                            if (!isIPv4) {
+                                // Xóa phần dư thừa sau '%' của IPv6
+                                int delimiter = address.indexOf('%');
+                                return delimiter < 0 ? address : address.substring(0, delimiter);
                             }
                         }
                     }
                 }
-            } catch (Exception ex) { }
-            return "";
-
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "";
     }
 }
