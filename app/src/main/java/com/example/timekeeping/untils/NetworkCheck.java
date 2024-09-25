@@ -17,8 +17,8 @@ public class NetworkCheck {
 
     private Context context;
     private Boolean enable=false;
-//    private final String companyIpRange = "171.252.153.46";
-    private final String companyIpRange = "116.106.195.231";
+    private final String companyIpRange = "171.252.153.46";
+    //private final String companyIpRange = "116.106.195.231";
 //    private final String companyIpRange = "115.77.231.25";
 
     public NetworkCheck(Context context) {

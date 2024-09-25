@@ -174,7 +174,8 @@ public class FragmentHome extends Fragment {
                     @Override
                     public void onResult(boolean enable) {
                         if (enable) {
-                            if(LocalTime.now().isBefore(todayShift.getEnd())){
+                            if(true){
+                           // if(LocalTime.now().isBefore(todayShift.getEnd())){
                                 CICO cico=new CICO(staff.getId(),
                                         LocalDateTime.now(),
                                         db.getShiftByDate(LocalDate.now()).getId());
@@ -203,80 +204,58 @@ public class FragmentHome extends Fragment {
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!LocalDate.now().isAfter(todayShift.getDate())){
-                    List<CICO> cicos=db.getCICOS(staff.getId());
-                    CICO cico= cicos.get(cicos.size()-1);
-                    cico.setCoTime(LocalDateTime.now());
-                    int rows = db.checkout(cico);
-                    if (rows > 0) {
-                        txtCO.setText(cico.getCoTime().format(DateTimeFormatter.ofPattern("HH:mm")));
-                        showSnackbar("Check-out succeed!!!","success");
-                        btnCheckout.setEnabled(false);
-                    } else {
-                        showSnackbar("Check-out failure!!!","error");
-                    }
-                }
-                else {
-                    showSnackbar("Too late for check-out now!!!","error");
+                NetworkCheck networkCheck= new NetworkCheck(getActivity());
+                networkCheck.getPublicIP(new EnableCallback() {
+                    @Override
+                    public void onResult(boolean enable) {
+                        if(enable){
+                            if(!LocalDate.now().isAfter(todayShift.getDate())){
+                                List<CICO> cicos=db.getCICOS(staff.getId());
+                                CICO cico= cicos.get(cicos.size()-1);
+                                cico.setCoTime(LocalDateTime.now());
+                                int rows = db.checkout(cico);
+                                if (rows > 0) {
+                                    txtCO.setText(cico.getCoTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+                                    showSnackbar("Check-out succeed!!!","warning");
+                                    btnCheckout.setEnabled(false);
+                                } else {
+                                    showSnackbar("Check-out failure!!!","error");
+                                }
+                            }
+                            else {
+                                showSnackbar("Too late for check-out now!!!","error");
 
-                }
+                            }
+                        }
+                        else {
+                            showSnackbar("No permission to execute!!!","error");
+                        }
+                    }
+                });
+
             }
         });
 
         return view;
     }
-    public static String getIPAddress(boolean useIPv4) {
-        try {
-            // Lấy danh sách tất cả các interface mạng
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            while (interfaces.hasMoreElements()) {
-                NetworkInterface networkInterface = interfaces.nextElement();
-                Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
-
-                // Lặp qua các địa chỉ trong interface
-                while (addresses.hasMoreElements()) {
-                    InetAddress inetAddress = addresses.nextElement();
-
-                    // Bỏ qua các địa chỉ loopback (localhost)
-                    if (!inetAddress.isLoopbackAddress()) {
-                        String address = inetAddress.getHostAddress();
-
-                        // Kiểm tra nếu địa chỉ là IPv4 hoặc IPv6 dựa trên tham số
-                        boolean isIPv4 = address.indexOf(':') < 0;
-                        if (useIPv4) {
-                            if (isIPv4) return address;
-                        } else {
-                            if (!isIPv4) {
-                                // Xóa phần dư thừa sau '%' của IPv6
-                                int delimiter = address.indexOf('%');
-                                return delimiter < 0 ? address : address.substring(0, delimiter);
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return "";
-    }
     private  void  showSnackbar(String message, String type ) {
 
         Snackbar snackbar = Snackbar.make(getActivity().findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
         if (type.equals("error")) {
-            snackbar.setTextColor(Color.parseColor("#ff0000"));
+            snackbar.setTextColor(getResources().getColor(R.color.text_red));
             snackbar.setBackgroundTint(getResources().getColor(R.color.red));
         } else if (type.equals("success")) {
-                snackbar.setTextColor(Color.parseColor("#28a745"));
+                snackbar.setTextColor(getResources().getColor(R.color.text_green));
                 snackbar.setBackgroundTint(getResources().getColor(R.color.green));
             }
             else if (type.equals("warning")) {
-            snackbar.setTextColor(getResources().getColor(R.color.black));
+            snackbar.setTextColor(getResources().getColor(R.color.text_yellow));
                 snackbar.setBackgroundTint(getResources().getColor(R.color.yellow));
             } else {
+            snackbar.setTextColor(getResources().getColor(R.color.text_blue));
                 snackbar.setBackgroundTint(getResources().getColor(R.color.blue));
             }
-            snackbar.getView().setBackground(getResources().getDrawable(R.drawable.bottom_background));
+         //   snackbar.getView().setBackground(getResources().getDrawable(R.drawable.bottom_background));
         View snackbarView = snackbar.getView();
         ViewGroup.LayoutParams params = snackbarView.getLayoutParams();
         params.width = ViewGroup.LayoutParams.WRAP_CONTENT; // Set width to wrap content

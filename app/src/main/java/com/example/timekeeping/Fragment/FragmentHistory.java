@@ -178,13 +178,13 @@ public class FragmentHistory extends Fragment {
         if (cico.getCoTime() == null) {
             txtCO.setText("None");
             txtStatus.setText("Incomplete");
-            txtStatus.setTextColor(getActivity().getResources().getColor(R.color.white));
-            txtStatus.setBackgroundResource(R.drawable.dialog_incomplete_button);
+            txtStatus.setTextColor(getActivity().getResources().getColor(R.color.text_yellow));
+            txtStatus.setBackgroundResource(R.drawable.incomplete_button);
         } else {
             txtCO.setText(cico.getCoTime().format(DateTimeFormatter.ofPattern("HH:mm")));
             if (LocalTime.of(cico.getCiTime().getHour(), cico.getCiTime().getMinute()).isAfter(db.getShiftById(cico.getShift()).getStart())) {
                 txtStatus.setText("Late");
-                txtStatus.setTextColor(getActivity().getResources().getColor(R.color.red));
+                txtStatus.setTextColor(getActivity().getResources().getColor(R.color.text_red));
                 txtStatus.setBackgroundResource(R.drawable.late_button);
             } else {
                 txtStatus.setText("On time");

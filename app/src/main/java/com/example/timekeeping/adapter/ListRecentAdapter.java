@@ -65,7 +65,7 @@ public class ListRecentAdapter extends BaseAdapter {
                     .format(DateTimeFormatter.ofPattern("HH:mm"))
                     + " -  None");
             txtState.setText("Incomplete");
-            txtState.setTextColor(context.getResources().getColor(R.color.black));
+            txtState.setTextColor(context.getResources().getColor(R.color.text_yellow));
             txtState.setBackgroundResource(R.drawable.incomplete_button);
         } else{
             ((TextView) recentItemView.findViewById(R.id.itemTime)).setText(checkin.getCiTime()
@@ -75,12 +75,12 @@ public class ListRecentAdapter extends BaseAdapter {
                     .format(DateTimeFormatter.ofPattern("HH:mm")));
             if(LocalTime.of(checkin.getCiTime().getHour(), checkin.getCiTime().getMinute()).isAfter(db.getShiftById(checkin.getShift()).getStart())) {
                 txtState.setText("Late");
-                txtState.setTextColor(context.getResources().getColor(R.color.red));
+                txtState.setTextColor(context.getResources().getColor(R.color.text_red));
                 txtState.setBackgroundResource(R.drawable.late_button);
             }
             else {
                 txtState.setText("On time");
-                txtState.setTextColor(context.getResources().getColor(R.color.green));
+                txtState.setTextColor(context.getResources().getColor(R.color.text_green));
                 txtState.setBackgroundResource(R.drawable.on_time_button);
             }
         }
