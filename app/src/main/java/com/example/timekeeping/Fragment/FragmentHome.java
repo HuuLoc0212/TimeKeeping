@@ -1,6 +1,7 @@
 package com.example.timekeeping.Fragment;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -9,9 +10,12 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -182,15 +186,14 @@ public class FragmentHome extends Fragment {
                                 txtCO.setText("None");
                                 btnCheckin.setEnabled(false);
                                 btnCheckout.setEnabled(true);
-//                                Toast.makeText(getActivity(),"Check-in succeed!!!", Toast.LENGTH_SHORT).show();
-                                Snackbar.make(getActivity().findViewById(android.R.id.content), "Đây là một thông báo", Snackbar.LENGTH_LONG).show();
-                                Log.d("Check", "Check-in succeed!!!");
+                              showSnackbar("Check-in succeed!!!","success");
                             }
                             else {
-                                Snackbar.make(getActivity().findViewById(android.R.id.content), "Too late for check-in now!!!", Snackbar.LENGTH_LONG).show();
+                                showSnackbar("Too late for check-in now!!!","error");
                             }
                         } else {
-                            Snackbar.make(getActivity().findViewById(android.R.id.content), "No permission to execute!!!", Snackbar.LENGTH_LONG).show();
+                            showSnackbar("No permission to execute!!!","error");
+
                         }
                     }
                 });
@@ -207,14 +210,15 @@ public class FragmentHome extends Fragment {
                     int rows = db.checkout(cico);
                     if (rows > 0) {
                         txtCO.setText(cico.getCoTime().format(DateTimeFormatter.ofPattern("HH:mm")));
-                        Toast.makeText(getActivity(),"Check-out succeed!!!", Toast.LENGTH_SHORT).show();
+                        showSnackbar("Check-out succeed!!!","success");
                         btnCheckout.setEnabled(false);
                     } else {
-                        Toast.makeText(getActivity(),"Check-out failure!!!", Toast.LENGTH_SHORT).show();
+                        showSnackbar("Check-out failure!!!","error");
                     }
                 }
                 else {
-                    Toast.makeText(getActivity(),"Too late for check-out", Toast.LENGTH_SHORT).show();
+                    showSnackbar("Too late for check-out now!!!","error");
+
                 }
             }
         });
@@ -256,4 +260,47 @@ public class FragmentHome extends Fragment {
         }
         return "";
     }
+    private  void  showSnackbar(String message, String type ) {
+
+        Snackbar snackbar = Snackbar.make(getActivity().findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+        if (type.equals("error")) {
+            snackbar.setTextColor(Color.parseColor("#ff0000"));
+            snackbar.setBackgroundTint(getResources().getColor(R.color.red));
+        } else if (type.equals("success")) {
+                snackbar.setTextColor(Color.parseColor("#28a745"));
+                snackbar.setBackgroundTint(getResources().getColor(R.color.green));
+            }
+            else if (type.equals("warning")) {
+            snackbar.setTextColor(getResources().getColor(R.color.black));
+                snackbar.setBackgroundTint(getResources().getColor(R.color.yellow));
+            } else {
+                snackbar.setBackgroundTint(getResources().getColor(R.color.blue));
+            }
+            snackbar.getView().setBackground(getResources().getDrawable(R.drawable.bottom_background));
+        View snackbarView = snackbar.getView();
+        ViewGroup.LayoutParams params = snackbarView.getLayoutParams();
+        params.width = ViewGroup.LayoutParams.WRAP_CONTENT; // Set width to wrap content
+        snackbarView.setLayoutParams(params);
+        if (params instanceof FrameLayout.LayoutParams) {
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) params;
+            layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+            layoutParams.bottomMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics()); // Set bottom margin to 20dp// Set gravity to center
+            int paddingTop = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()); // Example top padding
+            int paddingBottom = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()); // Example bottom padding
+            int paddingLeft = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()); // Example left padding
+            int paddingRight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()); // Example right padding
+            snackbarView.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+            snackbarView.setLayoutParams(layoutParams);
+        } else {
+            snackbarView.setLayoutParams(params);
+        }
+            snackbar.show();
+
+        }
+    private  void  showSnackBar(String message){
+        Snackbar snackbar = Snackbar.make(getActivity().findViewById(android.R.id.content), message,0);
+        snackbar.setBackgroundTint(getResources().getColor(R.color.grey));
+        snackbar.show();
+    }
+
 }

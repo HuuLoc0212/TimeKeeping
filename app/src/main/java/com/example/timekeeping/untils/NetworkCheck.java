@@ -17,7 +17,10 @@ public class NetworkCheck {
 
     private Context context;
     private Boolean enable=false;
-    private final String companyIpRange = "171.252.153.46";
+//    private final String companyIpRange = "171.252.153.46";
+    private final String companyIpRange = "116.106.195.231";
+//    private final String companyIpRange = "115.77.231.25";
+
     public NetworkCheck(Context context) {
         this.context = context;
     }
@@ -64,7 +67,6 @@ public class NetworkCheck {
                     URL url = new URL("https://api.ipify.org");
                     BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
                     String publicIP = reader.readLine();  // Địa chỉ IP public
-
                     enable= isCompanyPublicIP(publicIP) || isCompanyWifi();
                     if (callback != null) {
                         callback.onResult(enable);
