@@ -39,7 +39,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
     public void addStaff(Staff staff){
         SQLiteDatabase db = this.getWritableDatabase();
-
+    // luu tru thong tin cua bang
         ContentValues values = new ContentValues();
         values.put(StaffTable.getKeyName(), staff.getName());
         values.put(StaffTable.getKeyBod(), staff.getbOD().toString());
@@ -57,6 +57,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             ContentValues values = new ContentValues();
             values.put(StaffTable.getKeyId(),staff.getId());
+
             values.put(StaffTable.getKeyName(), staff.getName());
             values.put(StaffTable.getKeyBod(), staff.getbOD().toString());
             values.put(StaffTable.getKeyRole(), staff.getRole());
@@ -65,16 +66,13 @@ public class DBHelper extends SQLiteOpenHelper {
             values.put(StaffTable.getKeyBasicSalary(), staff.getBasicSalary());
 
             db.insert(StaffTable.getTbName(), null, values);
-
             db.close();
-
-
     }
     public Staff getStaffByID(int id) {
         SQLiteDatabase db = null;
         Cursor cursor = null;
         Staff staff = null;
-
+    // truy van du lieu tu bang
         try {
             db = this.getReadableDatabase();
             cursor = db.query(

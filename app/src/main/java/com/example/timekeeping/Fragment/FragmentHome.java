@@ -21,6 +21,8 @@ import com.example.timekeeping.model.CICO;
 import com.example.timekeeping.model.Shift;
 import com.example.timekeeping.model.Staff;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,10 +30,11 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 public class FragmentHome extends Fragment {
-
+    private final String companyIP="192.168.2.58";
     private TextView txtName, txtRole, txtCurrentShift, txtStart, txtEnd, txtCI, txtCO, txtShift;
     private LinearLayout btnCheckin, btnCheckout;
     private DBHelper db;
@@ -150,25 +153,29 @@ public class FragmentHome extends Fragment {
             @Override
             public void onClick(View view) {
                 //ss tg check in co wa gio lm hay ko
-                if(LocalTime.now().isBefore(todayShift.getEnd())){
-                    CICO cico=new CICO(staff.getId(),
-                            LocalDateTime.now(),
-                            db.getShiftByDate(LocalDate.now()).getId());
-                    db.addCICO(cico);
-                    todayCICO=cico;
-                    txtShift.setText(db.getShiftById(cico.getShift()).getDate()
-                            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                    txtCI.setText(cico.getCiTime().format(DateTimeFormatter.ofPattern("HH:mm")));
-                    txtCO.setText("None");
-                    btnCheckin.setEnabled(false);
-                    btnCheckout.setEnabled(true);
-                    Toast.makeText(getActivity(),"Check-in succeed!!!", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(getActivity(),"Too late for check-in now!!!", Toast.LENGTH_SHORT).show();
-                }
+                String currentIP = getIPAddress(true);
+                Toast.makeText(getActivity(),currentIP, Toast.LENGTH_SHORT).show();
+
+//                if(LocalTime.now().isBefore(todayShift.getEnd())){
+//                    CICO cico=new CICO(staff.getId(),
+//                            LocalDateTime.now(),
+//                            db.getShiftByDate(LocalDate.now()).getId());
+//                    db.addCICO(cico);
+//                    todayCICO=cico;
+//                    txtShift.setText(db.getShiftById(cico.getShift()).getDate()
+//                            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+//                    txtCI.setText(cico.getCiTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+//                    txtCO.setText("None");
+//                    btnCheckin.setEnabled(false);
+//                    btnCheckout.setEnabled(true);
+//                    Toast.makeText(getActivity(),"Check-in succeed!!!", Toast.LENGTH_SHORT).show();
+//                }
+//                else {
+//                    Toast.makeText(getActivity(),"Too late for check-in now!!!", Toast.LENGTH_SHORT).show();
+//                }
             }
         });
+        //ss tg check out co wa gio lm hay ko
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -189,5 +196,30 @@ public class FragmentHome extends Fragment {
         });
 
         return view;
+    }
+
+        public  String getIPAddress(boolean useIPv4) {
+            try {
+                List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+                for (NetworkInterface intf : interfaces) {
+                    List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
+                    for (InetAddress addr : addrs) {
+                        if (!addr.isLoopbackAddress()) {
+                            String sAddr = addr.getHostAddress();
+                            boolean isIPv4 = sAddr.indexOf(':') < 0;
+                            if (useIPv4) {
+                                if (isIPv4) return sAddr;
+                            } else {
+                                if (!isIPv4) {
+                                    int delim = sAddr.indexOf('%'); // drop ip6 port suffix
+                                    return delim < 0 ? sAddr : sAddr.substring(0, delim);
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception ex) { }
+            return "";
+
     }
 }
