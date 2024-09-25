@@ -188,7 +188,7 @@ public class FragmentHistory extends Fragment {
                 txtStatus.setBackgroundResource(R.drawable.late_button);
             } else {
                 txtStatus.setText("On time");
-                txtStatus.setTextColor(getActivity().getResources().getColor(R.color.green));
+                txtStatus.setTextColor(getActivity().getResources().getColor(R.color.text_green));
                 txtStatus.setBackgroundResource(R.drawable.on_time_button);
             }
         }

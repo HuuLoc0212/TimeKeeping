@@ -169,13 +169,13 @@ public class FragmentHome extends Fragment {
         btnCheckin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NetworkCheck networkCheck = new NetworkCheck(getActivity());
-                networkCheck.getPublicIP(new EnableCallback() {
-                    @Override
-                    public void onResult(boolean enable) {
-                        if (enable) {
-                            if(true){
-                           // if(LocalTime.now().isBefore(todayShift.getEnd())){
+//                NetworkCheck networkCheck = new NetworkCheck(getActivity());
+//                networkCheck.getPublicIP(new EnableCallback() {
+//                    @Override
+//                    public void onResult(boolean enable) {
+//                        if (enable) {
+//                            if(true){
+                            if(LocalTime.now().isBefore(todayShift.getEnd())){
                                 CICO cico=new CICO(staff.getId(),
                                         LocalDateTime.now(),
                                         db.getShiftByDate(LocalDate.now()).getId());
@@ -192,13 +192,14 @@ public class FragmentHome extends Fragment {
                             else {
                                 showSnackbar("Too late for check-in now!!!","error");
                             }
-                        } else {
-                            showSnackbar("No permission to execute!!!","error");
-
                         }
-                    }
-                });
-            }
+//                        else {
+//                            showSnackbar("No permission to execute!!!","error");
+//
+//                        }
+//                    }
+//                });
+//            }
         });
         //ss tg check out co wa gio lm hay ko
         btnCheckout.setOnClickListener(new View.OnClickListener() {
