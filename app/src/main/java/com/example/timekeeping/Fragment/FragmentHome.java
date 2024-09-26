@@ -9,6 +9,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.provider.Settings;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -181,24 +182,28 @@ public class FragmentHome extends Fragment {
 //                    public void onResult(boolean enable) {
 //                        if (enable) {
 //                            if(true){
-                            if(LocalTime.now().isBefore(todayShift.getEnd())){
-                                CICO cico=new CICO(staff.getId(),
-                                        LocalDateTime.now(),
-                                        db.getShiftByDate(LocalDate.now()).getId());
-                                db.addCICO(cico);
-                                todayCICO=cico;
-                                txtShift.setText(db.getShiftById(cico.getShift()).getDate()
-                                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                                txtCI.setText(cico.getCiTime().format(DateTimeFormatter.ofPattern("HH:mm")));
-                                txtCO.setText("None");
-                                btnCheckin.setEnabled(false);
-                                btnCheckout.setEnabled(true);
-                                showSnackBar("Check-in succeed!!!", "success");
-                            }
-                            else {
-                                showSnackBar("Too late for check-in now!!!","error");
-                                Log.d("Time",LocalTime.now().toString());
-                            }
+                if(isAutoTimeEnabled(getActivity())){
+                    if(LocalTime.now().isBefore(todayShift.getEnd())){
+                        CICO cico=new CICO(staff.getId(),
+                                LocalDateTime.now(),
+                                db.getShiftByDate(LocalDate.now()).getId());
+                        db.addCICO(cico);
+                        todayCICO=cico;
+                        txtShift.setText(db.getShiftById(cico.getShift()).getDate()
+                                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                        txtCI.setText(cico.getCiTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+                        txtCO.setText("None");
+                        btnCheckin.setEnabled(false);
+                        btnCheckout.setEnabled(true);
+                        showSnackBar("Check-in succeed!!!", "success");
+                    }
+                    else {
+                        showSnackBar("Too late for check-in now!!!","error");
+                        Log.d("Time",LocalTime.now().toString());
+                    }
+                }else {
+                    showSnackBar("Please enable auto time!!!","warning");
+                }
                             changeCheckButtonBackground(btnCheckin);
                             changeCheckButtonBackground(btnCheckout);
                         }
@@ -317,6 +322,18 @@ public class FragmentHome extends Fragment {
         }
         else {
             btn.setBackgroundColor(getResources().getColor(R.color.grey_1));
+        }
+    }
+    public boolean isAutoTimeEnabled(Context context) {
+        try {
+            int autoTimeSetting = Settings.Global.getInt(
+                    context.getContentResolver(),
+                    Settings.Global.AUTO_TIME
+            );
+            return autoTimeSetting == 1; // 1: Auto Time is enabled, 0: Auto Time is disabled
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+            return false; // Return false if the setting is not found
         }
     }
 }
