@@ -137,7 +137,6 @@ public class FragmentHome extends Fragment {
                     .format(DateTimeFormatter.ofPattern("HH:mm")));
         }
 
-
         //check today is checked-in
         for(CICO cico : lstCICO){
             if(cico.getShift()==todayShift.getId()){
@@ -145,10 +144,13 @@ public class FragmentHome extends Fragment {
                 break;
             }
         }
+
         //show today's check-in and set check-in, check-out buttons state
         if(todayCICO!=null){
             btnCheckin.setEnabled(false);
+
             btnCheckout.setEnabled(true);
+
             txtShift.setText(todayShift
                     .getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             txtCI.setText(todayCICO.getCiTime().format(DateTimeFormatter.ofPattern("HH:mm")));
@@ -166,6 +168,10 @@ public class FragmentHome extends Fragment {
             btnCheckout.setEnabled(false);
         }
 
+        changeCheckButtonBackground(btnCheckin);
+        changeCheckButtonBackground(btnCheckout);
+
+        //check-out button event
         btnCheckin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -187,11 +193,13 @@ public class FragmentHome extends Fragment {
                                 txtCO.setText("None");
                                 btnCheckin.setEnabled(false);
                                 btnCheckout.setEnabled(true);
-                              showSnackbar("Check-in succeed!!!","success");
+                                showSnackBar("Check-in succeed!!!", "success");
                             }
                             else {
-                                showSnackbar("Too late for check-in now!!!","error");
+                                showSnackBar("Too late for check-in now!!!","warning");
                             }
+                            changeCheckButtonBackground(btnCheckin);
+                            changeCheckButtonBackground(btnCheckout);
                         }
 //                        else {
 //                            showSnackbar("No permission to execute!!!","error");
@@ -201,45 +209,47 @@ public class FragmentHome extends Fragment {
 //                });
 //            }
         });
-        //ss tg check out co wa gio lm hay ko
+
+        //check-out button event
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NetworkCheck networkCheck= new NetworkCheck(getActivity());
-                networkCheck.getPublicIP(new EnableCallback() {
-                    @Override
-                    public void onResult(boolean enable) {
-                        if(enable){
+//                NetworkCheck networkCheck= new NetworkCheck(getActivity());
+//                networkCheck.getPublicIP(new EnableCallback() {
+//                    @Override
+//                    public void onResult(boolean enable) {
+//                        if(enable){
                             if(!LocalDate.now().isAfter(todayShift.getDate())){
-                                List<CICO> cicos=db.getCICOS(staff.getId());
-                                CICO cico= cicos.get(cicos.size()-1);
+                                CICO cico= db.getCICOS(staff.getId()).get(0);
                                 cico.setCoTime(LocalDateTime.now());
                                 int rows = db.checkout(cico);
                                 if (rows > 0) {
                                     txtCO.setText(cico.getCoTime().format(DateTimeFormatter.ofPattern("HH:mm")));
-                                    showSnackbar("Check-out succeed!!!","warning");
+                                    showSnackBar("Check-out succeed!!!","success");
                                     btnCheckout.setEnabled(false);
                                 } else {
-                                    showSnackbar("Check-out failure!!!","error");
+                                    showSnackBar("Check-out failure!!!","error");
                                 }
                             }
                             else {
-                                showSnackbar("Too late for check-out now!!!","error");
+                                showSnackBar("Too late for check-out now!!!","warning");
 
                             }
+                            changeCheckButtonBackground(btnCheckin);
+                            changeCheckButtonBackground(btnCheckout);
                         }
-                        else {
-                            showSnackbar("No permission to execute!!!","error");
-                        }
-                    }
-                });
+//                        else {
+//                            showSnackbar("No permission to execute!!!","error");
+//                        }
+//                    }
+//                });
 
-            }
+ //           }
         });
 
         return view;
     }
-    private  void  showSnackbar(String message, String type ) {
+    private  void  showSnackBar(String message, String type ) {
 
         Snackbar snackbar = Snackbar.make(getActivity().findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
         if (type.equals("error")) {
@@ -256,7 +266,7 @@ public class FragmentHome extends Fragment {
             snackbar.setTextColor(getResources().getColor(R.color.text_blue));
                 snackbar.setBackgroundTint(getResources().getColor(R.color.blue));
             }
-         //   snackbar.getView().setBackground(getResources().getDrawable(R.drawable.bottom_background));
+           snackbar.getView().setBackground(getResources().getDrawable(R.drawable.bottom_background));
         View snackbarView = snackbar.getView();
         ViewGroup.LayoutParams params = snackbarView.getLayoutParams();
         params.width = ViewGroup.LayoutParams.WRAP_CONTENT; // Set width to wrap content
@@ -280,7 +290,32 @@ public class FragmentHome extends Fragment {
     private  void  showSnackBar(String message){
         Snackbar snackbar = Snackbar.make(getActivity().findViewById(android.R.id.content), message,0);
         snackbar.setBackgroundTint(getResources().getColor(R.color.grey));
+        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.bottom_background));
+        View snackbarView = snackbar.getView();
+        ViewGroup.LayoutParams params = snackbarView.getLayoutParams();
+        params.width = ViewGroup.LayoutParams.WRAP_CONTENT; // Set width to wrap content
+        snackbarView.setLayoutParams(params);
+        if (params instanceof FrameLayout.LayoutParams) {
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) params;
+            layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+            layoutParams.bottomMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics()); // Set bottom margin to 20dp// Set gravity to center
+            int paddingTop = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()); // Example top padding
+            int paddingBottom = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()); // Example bottom padding
+            int paddingLeft = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()); // Example left padding
+            int paddingRight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()); // Example right padding
+            snackbarView.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+            snackbarView.setLayoutParams(layoutParams);
+        } else {
+            snackbarView.setLayoutParams(params);
+        }
         snackbar.show();
     }
-
+    private void changeCheckButtonBackground(LinearLayout btn){
+        if(btn.isEnabled()){
+            btn.setBackgroundColor(getResources().getColor(R.color.white));
+        }
+        else {
+            btn.setBackgroundColor(getResources().getColor(R.color.grey_1));
+        }
+    }
 }

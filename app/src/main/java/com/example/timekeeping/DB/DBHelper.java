@@ -386,7 +386,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     new String[]{String.valueOf(userID)}, // WHERE args
                     null, // GROUP BY clause
                     null, // HAVING clause
-                    null // ORDER BY clause
+                    CICOTable.getKeyId() + " DESC"  // ORDER BY clause
             );
 
             if (cursor != null && cursor.moveToFirst()) {
