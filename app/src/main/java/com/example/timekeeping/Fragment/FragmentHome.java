@@ -196,7 +196,8 @@ public class FragmentHome extends Fragment {
                                 showSnackBar("Check-in succeed!!!", "success");
                             }
                             else {
-                                showSnackBar("Too late for check-in now!!!","warning");
+                                showSnackBar("Too late for check-in now!!!","error");
+                                Log.d("Time",LocalTime.now().toString());
                             }
                             changeCheckButtonBackground(btnCheckin);
                             changeCheckButtonBackground(btnCheckout);
@@ -232,7 +233,7 @@ public class FragmentHome extends Fragment {
                                 }
                             }
                             else {
-                                showSnackBar("Too late for check-out now!!!","warning");
+                                showSnackBar("Too late for check-out now!!!","error");
 
                             }
                             changeCheckButtonBackground(btnCheckin);
@@ -274,7 +275,7 @@ public class FragmentHome extends Fragment {
         if (params instanceof FrameLayout.LayoutParams) {
             FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) params;
             layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-            layoutParams.bottomMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics()); // Set bottom margin to 20dp// Set gravity to center
+            layoutParams.bottomMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 90, getResources().getDisplayMetrics()); // Set bottom margin to 20dp// Set gravity to center
             int paddingTop = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()); // Example top padding
             int paddingBottom = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()); // Example bottom padding
             int paddingLeft = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()); // Example left padding
@@ -298,7 +299,7 @@ public class FragmentHome extends Fragment {
         if (params instanceof FrameLayout.LayoutParams) {
             FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) params;
             layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-            layoutParams.bottomMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics()); // Set bottom margin to 20dp// Set gravity to center
+            layoutParams.bottomMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 90, getResources().getDisplayMetrics()); // Set bottom margin to 20dp// Set gravity to center
             int paddingTop = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()); // Example top padding
             int paddingBottom = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()); // Example bottom padding
             int paddingLeft = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()); // Example left padding
