@@ -1,10 +1,6 @@
 package com.example.timekeeping.Fragment;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -18,38 +14,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.timekeeping.DB.DBHelper;
 import com.example.timekeeping.R;
-import com.example.timekeeping.adapter.ListRecentAdapter;
 import com.example.timekeeping.model.Account;
 import com.example.timekeeping.model.CICO;
 import com.example.timekeeping.model.Shift;
 import com.example.timekeeping.model.Staff;
-import com.example.timekeeping.untils.EnableCallback;
-import com.example.timekeeping.untils.NetworkCheck;
+import com.example.timekeeping.utils.EnableCallback;
+import com.example.timekeeping.utils.NetworkCheck;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.URL;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 
 public class FragmentHome extends Fragment {
@@ -176,14 +157,16 @@ public class FragmentHome extends Fragment {
         btnCheckin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                NetworkCheck networkCheck = new NetworkCheck(getActivity());
-//                networkCheck.getPublicIP(new EnableCallback() {
-//                    @Override
-//                    public void onResult(boolean enable) {
-//                        if (enable) {
-//                            if(true){
+                NetworkCheck networkCheck = new NetworkCheck(getActivity());
+                                networkCheck.getPublicIP(new EnableCallback() {
+                                    @Override
+                                    public void onResult(boolean enable) {
+                                        if (enable) {
+
                 if(isAutoTimeEnabled(getActivity())){
-                    if(LocalTime.now().isBefore(todayShift.getEnd())){
+                    if(true){
+
+//                    if(LocalTime.now().isBefore(todayShift.getEnd())){
                         CICO cico=new CICO(staff.getId(),
                                 LocalDateTime.now(),
                                 db.getShiftByDate(LocalDate.now()).getId());
@@ -207,24 +190,24 @@ public class FragmentHome extends Fragment {
                             changeCheckButtonBackground(btnCheckin);
                             changeCheckButtonBackground(btnCheckout);
                         }
-//                        else {
-//                            showSnackbar("No permission to execute!!!","error");
-//
-//                        }
-//                    }
-//                });
-//            }
+                        else {
+                            showSnackBar("No permission to execute!!!","error");
+
+                        }
+                    }
+                });
+            }
         });
 
         //check-out button event
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                NetworkCheck networkCheck= new NetworkCheck(getActivity());
-//                networkCheck.getPublicIP(new EnableCallback() {
-//                    @Override
-//                    public void onResult(boolean enable) {
-//                        if(enable){
+                NetworkCheck networkCheck= new NetworkCheck(getActivity());
+                networkCheck.getPublicIP(new EnableCallback() {
+                    @Override
+                    public void onResult(boolean enable) {
+                        if(enable){
                             if(!LocalDate.now().isAfter(todayShift.getDate())){
                                 CICO cico= db.getCICOS(staff.getId()).get(0);
                                 cico.setCoTime(LocalDateTime.now());
@@ -244,13 +227,13 @@ public class FragmentHome extends Fragment {
                             changeCheckButtonBackground(btnCheckin);
                             changeCheckButtonBackground(btnCheckout);
                         }
-//                        else {
-//                            showSnackbar("No permission to execute!!!","error");
-//                        }
-//                    }
-//                });
+                        else {
+                            showSnackBar("No permission to execute!!!","error");
+                        }
+                    }
+                });
 
- //           }
+            }
         });
 
         return view;
