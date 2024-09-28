@@ -51,7 +51,8 @@ android {
 }
 
 dependencies {
-
+    implementation ("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation ("androidx.core:core:1.9.0")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
