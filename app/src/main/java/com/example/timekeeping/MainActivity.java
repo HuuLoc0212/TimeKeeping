@@ -113,12 +113,16 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (!canScheduleExactAlarms()) {
                 requestExactAlarmPermission();
-            } else {
                 setAlarm();
             }
-        } else {
+            else {
+                setAlarm();
+            }
+        }
+        else {
             setAlarm();
         }
+
     }
 
     private boolean canScheduleExactAlarms() {
@@ -133,8 +137,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setAlarm() {
         // Lấy thời gian từ TimePicker
-        int hour = 21;  // Giờ cụ thể
-        int minute = 59;  // Phút cụ thể
+        int hour = 22;  // Giờ cụ thể
+        int minute = 53;  // Phút cụ thể
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
