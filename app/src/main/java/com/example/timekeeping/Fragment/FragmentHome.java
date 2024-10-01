@@ -264,7 +264,8 @@ public class FragmentHome extends Fragment {
                     if (publicIp.equals(companyIp)) {
                         getActivity().runOnUiThread(() -> {
                                     if (isAutoTimeEnabled(getActivity())) {
-                                        if (LocalTime.now().isBefore(todayShift.getEnd())) {
+                                        //if (LocalTime.now().isBefore(todayShift.getEnd())) {
+                                        if(true){
                                             CICO cico = new CICO(staff.getId(),
                                                     LocalDateTime.now(),
                                                     db.getShiftByDate(LocalDate.now()).getId());
@@ -355,4 +356,5 @@ public class FragmentHome extends Fragment {
         });
     }
 
+    
 }

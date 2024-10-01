@@ -113,14 +113,18 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (!canScheduleExactAlarms()) {
                 requestExactAlarmPermission();
-                setAlarm();
             }
             else {
-                setAlarm();
+                setAlarm("Let's check-in your work shift!!",8,30);
             }
         }
         else {
-            setAlarm();
+            if (!canScheduleExactAlarms()) {
+                requestExactAlarmPermission();
+            }
+            else {
+                setAlarm("Let's check-in your work shift!!",8,30);
+            }
         }
 
     }
@@ -135,10 +139,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void setAlarm() {
-        // Lấy thời gian từ TimePicker
-        int hour = 22;  // Giờ cụ thể
-        int minute = 53;  // Phút cụ thể
+    private void setAlarm(String message, int hour, int minute) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -152,20 +153,16 @@ public class MainActivity extends AppCompatActivity {
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, 0);
 
-        // Điều chỉnh thời gian thông báo trước 5, 10, 15, 30 phút nếu cần
-        int notifyBeforeMinutes = 0; // Ví dụ chọn trước 10 phút
-        calendar.add(Calendar.MINUTE, -notifyBeforeMinutes);
-
         // Intent để gửi thông báo
         Intent intent = new Intent(this, AlarmReceiver.class);
-        intent.putExtra("message", "Sắp đến giờ hẹn lúc " + hour + ":" + minute);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        intent.putExtra("message", message);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         if (alarmManager != null) {
             // Kiểm tra xem ứng dụng có thể đặt báo thức chính xác hay không
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 if (!alarmManager.canScheduleExactAlarms()) {
                     requestExactAlarmPermission();
                     return; // Ngừng nếu không có quyền

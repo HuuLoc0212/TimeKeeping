@@ -10,6 +10,9 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 
 import com.example.timekeeping.SplashScreenActivity;
+import com.google.type.DateTime;
+
+import java.time.LocalDateTime;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
@@ -36,7 +39,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         // Xây dựng thông báo
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setSmallIcon(android.R.drawable.ic_notification_overlay)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -44,7 +47,10 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setContentIntent(pendingIntent);
 
         // Hiển thị thông báo
-        notificationManager.notify(1, builder.build());
+        notificationManager.notify(getNotificationId(), builder.build());
+    }
+    private int getNotificationId(){
+        return (int) System.currentTimeMillis();
     }
 }
 
